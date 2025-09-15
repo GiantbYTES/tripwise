@@ -1,16 +1,28 @@
-require("dotenv").config(); // Load .env into process.env
+require("dotenv").config()
 
 module.exports = {
-  development: {
-    use_env_variable: "DB_CONNECTION",
-    dialect: "mysql",
-  },
-  test: {
-    use_env_variable: "DB_CONNECTION",
-    dialect: "mysql",
-  },
-  production: {
-    use_env_variable: "DB_CONNECTION",
-    dialect: "mysql",
-  },
-};
+  "development": {
+    url:process.env.SUPABASE_DB_URL,
+    dialect: "postgres",
+    dialectOptions:{
+      ssl:{
+        require:true,
+        rejectUnauthorized:false
+      }
+    }
+  }
+//   "test": {
+//     "username": "root",
+//     "password": null,
+//     "database": "database_test",
+//     "host": "127.0.0.1",
+//     "dialect": "mysql"
+//   },
+//   "production": {
+//     "username": "root",
+//     "password": null,
+//     "database": "database_production",
+//     "host": "127.0.0.1",
+//     "dialect": "mysql"
+//   }
+}
