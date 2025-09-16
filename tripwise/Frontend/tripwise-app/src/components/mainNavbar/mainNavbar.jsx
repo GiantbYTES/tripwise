@@ -1,5 +1,5 @@
-import React from "react";
-import tripwiseLogo from "../assets/tripwise_logo_new.png";
+import "./mainNavbar.css";
+import tripwiseLogo from "../../assets/tripwise_logo_new.png";
 
 function MainNavbar() {
   return (
