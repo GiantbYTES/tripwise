@@ -1,7 +1,7 @@
 'use strict';
-
 const fs = require('fs');
 const path = require('path');
+const basename = path.basename(__filename)
 const Sequelize = require('sequelize');
 const process = require('process');
 const db = {};

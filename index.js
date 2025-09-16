@@ -1,6 +1,7 @@
 const express = require("express");
-require("dotenv").config({ path: "./BackEnd/.env" });
+require("dotenv").config();
 const path = require("path");
+const db = require("./BackEnd/db/models/index.js")
 //const { sequelize } = require("./db/models/index.js");
 const app = express();
 
@@ -13,21 +14,16 @@ app.use(express.urlencoded({ extended: false }));
 const geminiRouter = require("./BackEnd/routes/geminiRouter");
 app.use("/api/gemini", geminiRouter);
 
-app.get("/sanity", (req, res) => {
-  res.send("Server is running");
-});
-
 async function testConnection() {
   try {
-    await sequelize.authenticate();
+    await db.sequelize.authenticate();
     console.log("✅ Database connection established successfully.");
+    app.listen(process.env.PORT, () => {
+      console.log(`Server running on ${process.env.PORT}`);
+    });
   } catch (error) {
     console.error("❌ Unable to connect to database:", error);
   }
 }
+testConnection()
 
-const port = 3000;
-app.listen(port, async function () {
-  console.log(`Server running on ${port}`);
-  //await testConnection();
-});
