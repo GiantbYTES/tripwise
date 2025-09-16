@@ -1,8 +1,13 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding-top: 0;
   text-align: center;
+}
+
+header.sticky-top {
+  z-index: 1020;
+  top: 0;
 }
 
 .logo {
