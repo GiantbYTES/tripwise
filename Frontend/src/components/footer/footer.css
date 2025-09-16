@@ -1,3 +1,9 @@
 .footer {
-	
+  margin-top: auto;
+  background-color: #f8f9fa;
+}
+
+/* Ensure the footer container takes full width */
+.footer .container {
+  width: 100%;
 }
