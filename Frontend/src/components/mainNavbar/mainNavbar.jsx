@@ -5,7 +5,12 @@ function MainNavbar() {
   return (
     <header
       className="sticky-top p-3 mb-3 border-bottom"
-      style={{ top: 0, zIndex: 1020, position: "sticky" }}
+      style={{
+        top: 0,
+        zIndex: 1020,
+        position: "sticky",
+        backgroundColor: "white",
+      }}
     >
       <div className="container">
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
