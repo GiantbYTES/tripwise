@@ -3,3 +3,8 @@
   border-color: #00ab42 !important;
   color: #000 !important;
 }
+.homepage-container .btn-primary:hover {
+  background-color: #00ab42 !important;
+  border-color: #008f34 !important;
+  color: #000 !important;
+}

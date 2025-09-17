@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import MainNavbar from "./components/mainNavbar/mainNavbar";
 import Footer from "./components/footer/footer";
 import Dashboard from "./pages/DashboardPage/DashboardPage";
+import Error from "./pages/ErrorPage/ErrorPage";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* TODO: 404 page's route */}
+          <Route path="*" element={<Error />} />
         </Routes>
       </div>
       <Footer />
