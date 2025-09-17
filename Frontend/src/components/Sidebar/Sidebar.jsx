@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Sidebar.css";
+import tripwiseLogo from "../../assets/tripwise_logo_new.png";
 
 export function Sidebar() {
   const [homeCollapsed, setHomeCollapsed] = useState(false);
@@ -14,28 +15,32 @@ export function Sidebar() {
           href="/"
           className="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom"
         >
-          <svg
-            className="bi pe-none me-2"
-            width="30"
-            height="24"
-            aria-hidden="true"
-          >
-            <use xlinkHref="#bootstrap"></use>
-          </svg>
+          <img
+            src={tripwiseLogo}
+            alt="Tripwise Logo"
+            width="40"
+            height="32"
+            className="me-2"
+          />
+          {/* <use xlinkHref="#bootstrap"></use> */}
+
           <span className="fs-5 fw-semibold">TripWise</span>
         </a>
         <ul className="list-unstyled ps-0">
+          <button className="btn btn-success  px-5" type="button">
+            AI TripWising
+          </button>
           <li className="mb-1">
             <button
               className="btn btn-toggle d-inline-flex align-items-center rounded border-0"
               onClick={() => setHomeCollapsed(!homeCollapsed)}
               aria-expanded={!homeCollapsed}
             >
-              Home
+              Your Trip
             </button>
             <div className={`collapse ${!homeCollapsed ? "show" : ""}`}>
               <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li>
+                {/* <li>
                   <a
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
@@ -58,7 +63,8 @@ export function Sidebar() {
                   >
                     Reports
                   </a>
-                </li>
+                </li> */}
+                {/* TODO: filled with dates after user's input was inserted */}
               </ul>
             </div>
           </li>
@@ -68,7 +74,7 @@ export function Sidebar() {
               onClick={() => setDashboardCollapsed(!dashboardCollapsed)}
               aria-expanded={!dashboardCollapsed}
             >
-              Dashboard
+              Explore
             </button>
             <div className={`collapse ${!dashboardCollapsed ? "show" : ""}`}>
               <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -77,7 +83,7 @@ export function Sidebar() {
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                   >
-                    Overview
+                    News
                   </a>
                 </li>
                 <li>
@@ -85,7 +91,7 @@ export function Sidebar() {
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                   >
-                    Weekly
+                    Events
                   </a>
                 </li>
                 <li>
@@ -93,7 +99,7 @@ export function Sidebar() {
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                   >
-                    Monthly
+                    Recommendations
                   </a>
                 </li>
                 <li>
@@ -101,7 +107,7 @@ export function Sidebar() {
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                   >
-                    Annually
+                    Tips
                   </a>
                 </li>
               </ul>
@@ -113,7 +119,7 @@ export function Sidebar() {
               onClick={() => setOrdersCollapsed(!ordersCollapsed)}
               aria-expanded={!ordersCollapsed}
             >
-              Orders
+              Overview
             </button>
             <div className={`collapse ${!ordersCollapsed ? "show" : ""}`}>
               <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -122,7 +128,7 @@ export function Sidebar() {
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                   >
-                    New
+                    Budget
                   </a>
                 </li>
                 <li>
@@ -130,7 +136,7 @@ export function Sidebar() {
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                   >
-                    Processed
+                    Flight Status
                   </a>
                 </li>
                 <li>
@@ -138,7 +144,7 @@ export function Sidebar() {
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                   >
-                    Shipped
+                    Checklist
                   </a>
                 </li>
                 <li>
@@ -146,7 +152,7 @@ export function Sidebar() {
                     href="#"
                     className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                   >
-                    Returned
+                    More Information
                   </a>
                 </li>
               </ul>

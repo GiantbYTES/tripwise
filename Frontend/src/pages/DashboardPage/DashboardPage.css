@@ -11,3 +11,8 @@
   padding: 0;
   overflow: hidden;
 }
+
+/* Ensure each component takes appropriate space */
+.dashboard-container > * {
+  flex-shrink: 0;
+}

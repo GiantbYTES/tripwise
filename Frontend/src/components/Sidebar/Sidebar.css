@@ -31,6 +31,30 @@
 }
 
 /* Button styling */
+.list-unstyled .btn-success {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #28a745;
+  background: #2a7b9b;
+  background: linear-gradient(
+    90deg,
+    rgba(42, 123, 155, 1) 0%,
+    rgba(87, 199, 133, 1) 50%,
+    rgba(87, 199, 133, 1) 100%
+  );
+  border: 1px solid #28a745;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+.list-unstyled .btn-success:hover {
+  background-color: #218838;
+  text-decoration: none;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .btn-toggle {
   width: 100%;
   padding: 0.25rem 0.5rem;
@@ -46,14 +70,16 @@
   background-color: var(--bs-tertiary-bg, #f8f9fa);
 }
 
+/* Arrow points right by default */
 .btn-toggle::before {
   width: 1.25em;
   line-height: 0;
-  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m5 6 3 3 3-3'/%3e%3c/svg%3e");
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 5 3 3-3 3'/%3e%3c/svg%3e");
   transition: transform 0.35s ease;
   transform-origin: 0.5em 50%;
 }
 
+/* Arrow points down when expanded */
 .btn-toggle[aria-expanded="true"]::before {
   transform: rotate(90deg);
 }
