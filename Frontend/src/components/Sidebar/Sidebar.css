@@ -1,4 +1,17 @@
 .Sidebar {
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* Ensure the sidebar container takes the fixed width */
+.sidebar-container {
+  width: 280px;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
 }
 
 /* Collapsible functionality */
