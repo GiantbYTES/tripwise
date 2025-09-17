@@ -1,0 +1,41 @@
+.body-container {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  margin: 0;
+  min-width: 0; /* Prevents flex item from overflowing */
+  background-color: #ffffff;
+}
+
+/* Ensure the main content area within Body can scroll */
+.body-container main {
+  height: auto;
+  min-height: 100%;
+  padding-bottom: 2rem; /* Add some bottom padding for better UX */
+}
+
+/* Make table responsive work better within scrollable container */
+.table-responsive {
+  max-height: none;
+  overflow-x: auto;
+}
+
+/* Customize scrollbar for better appearance */
+.body-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.body-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.body-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.body-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
