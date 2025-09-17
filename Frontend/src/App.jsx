@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {SignupPage} from "./pages/auth/SignupPage/SignupPage.jsx"
 import HomePage from "./pages/HomePage/HomePage";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
@@ -14,6 +15,7 @@ function App() {
       <div className="app-content">
         <Routes>
           <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={<SignupPage />}/>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<Error />} />
         </Routes>

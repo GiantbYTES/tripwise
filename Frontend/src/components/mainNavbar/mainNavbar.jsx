@@ -1,5 +1,6 @@
 import "./mainNavbar.css";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
+import { Link } from "react-router-dom";
 
 function MainNavbar() {
   return (
@@ -55,9 +56,9 @@ function MainNavbar() {
               </a>
             </li>
             <li className="nav-item">
-              <a href="#" className="nav-link link-body-emphasis px-2">
+              <Link to="/signUp" className="nav-link link-body-emphasis px-2">
                 Sign up
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
