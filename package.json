@@ -10,7 +10,7 @@
     "preview": "cd Frontend && vite preview"
   },
   "keywords": [],
-  "author": "",
+  "author": "Amir Schaket ,Tzuriel Yeffet, Aviv Ben-Ezra,Assaf Mor",
   "license": "ISC",
   "description": "",
   "dependencies": {
