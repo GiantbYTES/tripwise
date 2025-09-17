@@ -24,12 +24,6 @@ export default function HomePage(props) {
           >
             Start planning
           </button>
-          {/* <button
-            type="button"
-            className="btn btn-outline-secondary btn-lg px-4"
-          >
-            Secondary
-          </button> */}
         </div>
       </div>
       <div

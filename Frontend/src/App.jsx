@@ -5,15 +5,21 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import MainNavbar from "./components/mainNavbar/mainNavbar";
 import Footer from "./components/footer/footer";
+import Dashboard from "./pages/DashboardPage/DashboardPage";
+import Error from "./pages/ErrorPage/ErrorPage";
 
 function App() {
   return (
     <>
       <MainNavbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
+      <div className="app-content">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignupPage />}/>
-      </Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="*" element={<Error />} />
+        </Routes>
+      </div>
       <Footer />
     </>
   );
