@@ -4,7 +4,7 @@ import tripwiseLogo from "../../assets/tripwise_logo_new.png";
 function MainNavbar() {
   return (
     <header
-      className="sticky-top p-3 mb-3 border-bottom"
+      className="sticky-top p-1 mb-3 border-bottom"
       style={{
         top: 0,
         zIndex: 1020,
