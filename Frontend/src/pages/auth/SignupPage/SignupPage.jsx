@@ -12,8 +12,13 @@ export function SignupPage() {
     const [password,setPassword] = useState("")
     const [loading,setLoading] = useState(false)
     const [confirmPassword,setConfirmPassword] = useState("")
-
+    const [isEmailValid,setIsEmailValid] = useState(false)
+    const [isPasswordValid,setIsPasswordValid]= useState(false)
     const isMatch = password === confirmPassword && confirmPassword.length>0
+    const isValid = isEmailValid && isPasswordValid && isMatch
+
+    console.log("isValid? ",isValid);
+    
     const handleSignup=()=>{
 
     }
@@ -26,10 +31,10 @@ export function SignupPage() {
         <div className="signup-form">
           <h1> Sign Up</h1>
           <AuthForm>
-            <EmailField value={email} onChange={setEmail} />
-            <PasswordField value={password} onChange={setPassword}/>
+            <EmailField value={email} onChange={setEmail} onValidChange={setIsEmailValid}/>
+            <PasswordField value={password} onChange={setPassword} onValidChange={setIsPasswordValid}/>
             <ConfirmPasswordField password={password} value={confirmPassword} onChange={setConfirmPassword} />
-            <AuthButton text="Sing Up" disabled={!isMatch}/>
+            <AuthButton text="Sing Up" disabled={!isValid}/>
           </AuthForm>
         </div>
       </div>

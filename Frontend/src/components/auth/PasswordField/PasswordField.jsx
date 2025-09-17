@@ -2,13 +2,16 @@ import { useState } from "react"
 import { passwordValidation } from "../../../utils/validations/passwordValidation.js";
 import "../AuthField.css"
 
-export function PasswordField({value,onChange}){
+export function PasswordField({value,onChange,onValidChange}){
    const [rules,setRules] = useState({valid:false,rules:{}});
    
    function handleChange(event){
     const password = event.target.value;
     onChange(password)
-    setRules(passwordValidation(password))
+
+    const result = passwordValidation(password)
+    setRules(result)
+    onValidChange(result.valid)
 
    }
 

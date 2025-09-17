@@ -1,17 +1,15 @@
 import { useState } from "react";
 import {emailValidation} from "../../../utils/validations/emailValidation.js"
 import "../AuthField.css"
-export function EmailField({value,onChange}){
+export function EmailField({value,onChange,onValidChange}){
     const [isValid,setIsValid] = useState({valid:false,rules:{}})
-    function handleChange(event){
-        console.log("inside EmailField handleChange");
-        
-        const email= event.target.value;
-        console.log(email);
-        
+    function handleChange(event){        
+        const email= event.target.value;        
         onChange(email)
-        setIsValid(emailValidation(email))
-        console.log(isValid);
+
+        const result = emailValidation(email)
+        setIsValid(result)
+        onValidChange(result.valid)
         
     }
 
