@@ -56,7 +56,7 @@ function MainNavbar() {
               </a>
             </li>
             <li className="nav-item">
-              <Link to="/signUp" className="nav-link link-body-emphasis px-2">
+              <Link to="/signup" className="nav-link link-body-emphasis px-2">
                 Sign up
               </Link>
             </li>

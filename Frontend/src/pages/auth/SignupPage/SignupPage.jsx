@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthForm } from "../../../components/auth/AuthForm/AuthForm.jsx";
 import { EmailField } from "../../../components/auth/EmailField/EmailField.jsx";
 import { PasswordField } from "../../../components/auth/PasswordField/PasswordField.jsx";
@@ -15,18 +16,18 @@ export function SignupPage() {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const isMatch = password === confirmPassword && confirmPassword.length > 0;
   const isValid = isEmailValid && isPasswordValid && isMatch;
-
-  console.log("isValid? ", isValid);
+const navigate = useNavigate()
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/signup", {
+      const response = await fetch("http://localhost:3000/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password }),        
       });
+
       if (!response.ok) {
         throw new Error("Signup failed");
       }
@@ -34,14 +35,13 @@ export function SignupPage() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       alert("Signup successful!");
-      console.log("User:", data.user);
-
-      // redirect user (optional)
-      // navigate("/dashboard");
+      navigate("/dashboard",{
+        replace:true,
+        state:{fromSignup:true}});
 
     } catch (err) {
       console.error(err);
-      alert("Something went wrong");
+      alert(err);
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ export function SignupPage() {
               value={confirmPassword}
               onChange={setConfirmPassword}
             />
-            <AuthButton text="Sing Up" disabled={!isValid} />
+            <AuthButton text="Sing Up" disabled={!isValid} loading={loading} onClick={handleSignup}/>
           </AuthForm>
         </div>
       </div>
