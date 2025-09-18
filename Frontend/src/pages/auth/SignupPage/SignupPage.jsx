@@ -5,7 +5,7 @@ import { EmailField } from "../../../components/auth/EmailField/EmailField.jsx";
 import { PasswordField } from "../../../components/auth/PasswordField/PasswordField.jsx";
 import { ConfirmPasswordField } from "../../../components/auth/ConfirmPasswordField/ConfirmPasswordField.jsx";
 import { AuthButton } from "../../../components/auth/AuthButton/AuthButton.jsx";
-import "./SignupPage.css";
+import "../AuthPage.css";
 
 export function SignupPage() {
   const [email, setEmail] = useState("");
@@ -49,8 +49,8 @@ const navigate = useNavigate()
 
   return (
     <>
-      <div className="signup-page">
-        <div className="signup-form">
+      <div className="auth-page">
+        <div className="auth-page-form">
           <h1> Sign Up</h1>
           <AuthForm>
             <EmailField
