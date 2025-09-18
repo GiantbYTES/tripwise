@@ -8,6 +8,7 @@ import {
   TRANSPORTATION_TYPES, 
   INTEREST_OPTIONS 
 } from './tripFormConstants';
+import tripPlanningAPI from '../../services/tripPlanningAPI';
 import './tripForm.css';
 
 function TripForm() {
@@ -15,7 +16,6 @@ function TripForm() {
     destination: '',
     tripType: '',
     travelers: '',
-    duration: '',
     budget: '',
     startDate: '',
     endDate: '',
@@ -26,6 +26,19 @@ function TripForm() {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Calculate trip duration for display
+  const calculateDuration = () => {
+    if (formData.startDate && formData.endDate) {
+      const startDate = new Date(formData.startDate);
+      const endDate = new Date(formData.endDate);
+      const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+      return duration > 0 ? duration : 0;
+    }
+    return 0;
+  };
+
+  const tripDuration = calculateDuration();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,42 +68,13 @@ function TripForm() {
   const validateForm = () => {
     const newErrors = {};
 
-    // Required field validations
-    if (!formData.destination.trim()) {
-      newErrors.destination = 'Destination is required';
-    }
-
-    if (!formData.tripType) {
-      newErrors.tripType = 'Trip type is required';
-    }
-
-    if (!formData.travelers) {
-      newErrors.travelers = 'Number of travelers is required';
-    }
-
-    if (!formData.duration) {
-      newErrors.duration = 'Trip duration is required';
-    } else if (parseInt(formData.duration) < 1 || parseInt(formData.duration) > 365) {
-      newErrors.duration = 'Duration must be between 1 and 365 days';
-    }
-
-    if (!formData.budget) {
-      newErrors.budget = 'Budget is required';
-    } else if (parseInt(formData.budget) < 0) {
-      newErrors.budget = 'Budget must be a positive number';
-    }
-
-    if (!formData.startDate) {
-      newErrors.startDate = 'Start date is required';
-    } else if (new Date(formData.startDate) < new Date()) {
-      newErrors.startDate = 'Start date cannot be in the past';
-    }
-
-    if (!formData.endDate) {
-      newErrors.endDate = 'End date is required';
-    } else if (formData.startDate && new Date(formData.endDate) <= new Date(formData.startDate)) {
-      newErrors.endDate = 'End date must be after start date';
-    }
+    // Basic required field check (detailed validation happens in API)
+    if (!formData.destination.trim()) newErrors.destination = 'Destination is required';
+    if (!formData.tripType) newErrors.tripType = 'Trip type is required';
+    if (!formData.travelers) newErrors.travelers = 'Number of travelers is required';
+    if (!formData.budget) newErrors.budget = 'Budget is required';
+    if (!formData.startDate) newErrors.startDate = 'Start date is required';
+    if (!formData.endDate) newErrors.endDate = 'End date is required';
 
     return newErrors;
   };
@@ -98,6 +82,7 @@ function TripForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrors({}); // Clear any previous errors
 
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
@@ -107,18 +92,35 @@ function TripForm() {
     }
 
     try {
-      // Here you would typically send the data to your backend/AI service
-      console.log('Trip planning data:', formData);
+      console.log('🚀 Submitting trip plan...');
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Submit to backend API (validation and formatting happens in API service)
+      const result = await tripPlanningAPI.submitTripPlan(formData);
       
-      // Success handling - redirect to results or show success message
-      alert('Trip plan submitted successfully!');
+      if (result.success) {
+        console.log('✅ Trip plan generated successfully:', result.data);
+        
+        // Store the trip plan data
+        localStorage.setItem('generatedTripPlan', JSON.stringify(result.data));
+        localStorage.setItem('originalFormData', JSON.stringify(formData));
+        
+        // Show success message
+        alert(`Trip plan "${result.data.tripName}" generated successfully! Check console for full details.`);
+        
+        // TODO: Navigate to trip results page
+        // navigate('/trip-results');
+        
+      } else {
+        throw new Error(result.error || 'Failed to generate trip plan');
+      }
       
     } catch (error) {
-      console.error('Error submitting trip plan:', error);
-      setErrors({ submit: 'Failed to submit trip plan. Please try again.' });
+      console.error('❌ Error submitting trip plan:', error);
+      
+      // Simple error handling - detailed handling is in shared modules
+      const errorMessage = error.message || 'Failed to generate trip plan. Please try again.';
+      setErrors({ submit: errorMessage });
+      
     } finally {
       setIsSubmitting(false);
     }
@@ -185,7 +187,7 @@ function TripForm() {
                   </Col>
                 </Row>
 
-                {/* Travelers and Duration */}
+                {/* Travelers */}
                 <Row className="mb-4">
                   <Col md={6}>
                     <Form.Group>
@@ -204,25 +206,6 @@ function TripForm() {
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         {errors.travelers}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">Duration (days) *</Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="duration"
-                        value={formData.duration}
-                        onChange={handleInputChange}
-                        isInvalid={!!errors.duration}
-                        placeholder="e.g., 7"
-                        min="1"
-                        max="365"
-                        size="lg"
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.duration}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -278,6 +261,13 @@ function TripForm() {
                       <Form.Control.Feedback type="invalid">
                         {errors.endDate}
                       </Form.Control.Feedback>
+                      {tripDuration > 0 && (
+                        <div className="mt-2">
+                          <small className="text-muted">
+                            🗓️ Trip Duration: <strong>{tripDuration} day{tripDuration !== 1 ? 's' : ''}</strong>
+                          </small>
+                        </div>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>
