@@ -7,7 +7,6 @@ const process = require('process');
 const db = {};
 
 
-// const connectToDatabase = ()=>{
   const sequelize = new Sequelize(process.env.SUPABASE_DB_URL, {
     dialect:"postgres",
     dialectOptions:{
@@ -17,7 +16,6 @@ const db = {};
       }
     }
   });
-// } 
 
 fs
   .readdirSync(__dirname)
