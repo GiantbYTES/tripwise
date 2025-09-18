@@ -5,16 +5,19 @@
   position: relative;
   left: 50%;
   right: 50%;
-  transform: translateX(-50%);
+  margin-left: -50vw;
+  margin-right: -50vw;
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  overflow-x: hidden;
 }
 
 .footer .container {
   width: 100%;
-  max-width: 100vw;
-  padding: 0;
+  max-width: none;
+  padding: 0 15px;
+  margin: 0;
 }
