@@ -1,0 +1,241 @@
+
+/* Trip Form Styles */
+.trip-form-container {
+  min-height: 100vh;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.trip-form-container .card {
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.trip-form-container .card-header {
+  background: linear-gradient(135deg, #4a90e2 0%, #7bb3f0 100%) !important;
+  border: none;
+  padding: 2rem;
+}
+
+.trip-form-container .card-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.trip-form-container .card-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.trip-form-container .form-label {
+  color: #2c3e50;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.trip-form-container .form-control,
+.trip-form-container .form-select {
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.trip-form-container .form-control:focus,
+.trip-form-container .form-select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+  background-color: #fff;
+}
+
+.trip-form-container .form-control.is-invalid,
+.trip-form-container .form-select.is-invalid {
+  border-color: #dc3545;
+}
+
+.trip-form-container .invalid-feedback {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Interests Grid */
+.interests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+}
+
+.interest-checkbox {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.interest-checkbox .form-check-input {
+  border-radius: 6px;
+  border: 2px solid #dee2e6;
+  margin-top: 0;
+}
+
+.interest-checkbox .form-check-input:checked {
+  background-color: #4a90e2;
+  border-color: #4a90e2;
+}
+
+.interest-checkbox .form-check-input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+}
+
+.interest-checkbox .form-check-label {
+  font-size: 0.95rem;
+  color: #495057;
+  cursor: pointer;
+}
+
+/* Submit Button */
+.submit-btn {
+  background: linear-gradient(135deg, #4a90e2 0%, #7bb3f0 100%);
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+  background: linear-gradient(135deg, #357abd 0%, #6ba3e8 100%);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* Form Groups Spacing */
+.trip-form-container .form-group {
+  margin-bottom: 0;
+}
+
+.trip-form-container .row.mb-4 {
+  margin-bottom: 2rem !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .trip-form-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .trip-form-container .card-header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .trip-form-container .card-header h2 {
+    font-size: 2rem;
+  }
+  
+  .trip-form-container .card-body {
+    padding: 1.5rem !important;
+  }
+  
+  .interests-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .trip-form-container .card-header h2 {
+    font-size: 1.75rem;
+  }
+  
+  .trip-form-container .card-header p {
+    font-size: 1rem;
+  }
+}
+
+/* Animation for form appearance */
+.trip-form-container .card {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom styling for form sections */
+.trip-form-container .alert {
+  border-radius: 12px;
+  border: none;
+}
+
+.trip-form-container .alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+
+/* Textarea specific styling */
+.trip-form-container textarea.form-control {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Date input enhancement */
+.trip-form-container input[type="date"] {
+  position: relative;
+}
+
+.trip-form-container input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #4a90e2;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+/* Number input styling */
+.trip-form-container input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.trip-form-container input[type="number"]::-webkit-outer-spin-button,
+.trip-form-container input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
