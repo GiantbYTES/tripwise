@@ -1,13 +1,14 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors"); 
+const cors = require("cors");
+const cookieParser= require("cookie-parser") 
 const path = require("path");
 const db = require("./BackEnd/db/models/index.js");
 const authRouter = require("./BackEnd/routes/authRouter.js");
 const geminiRouter = require("./BackEnd/routes/geminiRouter.js");
 
 const app = express();
-
+app.use(cookieParser)
 app.use(cors({
   origin: "http://localhost:5173", 
   credentials: true          

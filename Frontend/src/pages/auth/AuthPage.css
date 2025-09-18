@@ -1,0 +1,16 @@
+.auth-page {
+  height: 100vh;
+}
+.auth-page-form {
+  margin: 3rem auto;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  transition: all 0.3s ease;
+}
+
+h1 {
+  padding: 2rem;
+}
