@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./Sidebar.css";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
+import { mockTripData } from "../../utils/tripData";
 
-export function Sidebar() {
+export function Sidebar({ selectedDay, onDaySelect }) {
   const [homeCollapsed, setHomeCollapsed] = useState(false);
   const [dashboardCollapsed, setDashboardCollapsed] = useState(true);
   const [ordersCollapsed, setOrdersCollapsed] = useState(true);
@@ -40,31 +41,40 @@ export function Sidebar() {
             </button>
             <div className={`collapse ${!homeCollapsed ? "show" : ""}`}>
               <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                {/* <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Overview
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Updates
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Reports
-                  </a>
-                </li> */}
-                {/* TODO: filled with dates after user's input was inserted */}
+                {mockTripData.days.map((day) => (
+                  <li key={day.id}>
+                    <a
+                      href="#"
+                      className={`link-body-emphasis d-inline-flex text-decoration-none rounded day-link ${
+                        selectedDay && selectedDay.id === day.id ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (onDaySelect) {
+                          onDaySelect(day);
+                        }
+                      }}
+                    >
+                      <div className="day-link-content">
+                        <div className="day-header">
+                          <strong>Day {day.dayNumber}</strong>
+                          <small className="text-muted ms-1">
+                            {new Date(day.date).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </small>
+                        </div>
+                        <div className="day-route">
+                          <small className="text-muted">
+                            {day.startLocation.name.split(",")[0]} →{" "}
+                            {day.endLocation.name.split(",")[0]}
+                          </small>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </li>

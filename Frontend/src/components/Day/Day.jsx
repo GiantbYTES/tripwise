@@ -1,16 +1,13 @@
 import "./Day.css";
-import { useState } from "react";
 import { mockTripData } from "../../utils/tripData";
 
-export default function Day() {
-  const [selectedDay, setSelectedDay] = useState(mockTripData.days[0]);
+export default function Day({ selectedDay, onDaySelect }) {
+  // Use the selectedDay from props, fallback to first day if not provided
+  const currentSelectedDay = selectedDay || mockTripData.days[0];
 
   const handleDaySelect = (day) => {
-    setSelectedDay(day);
-
-    // Highlight the selected day on the map
-    if (window.mapHighlightDay) {
-      window.mapHighlightDay(day.dayNumber);
+    if (onDaySelect) {
+      onDaySelect(day);
     }
   };
 
@@ -42,7 +39,7 @@ export default function Day() {
               <div key={day.id} className="col-md-2 mb-3">
                 <div
                   className={`card day-card ${
-                    selectedDay.id === day.id ? "selected" : ""
+                    currentSelectedDay.id === day.id ? "selected" : ""
                   }`}
                   onClick={() => handleDaySelect(day)}
                   style={{ cursor: "pointer" }}
@@ -77,8 +74,8 @@ export default function Day() {
           <div className="card day-details-card">
             <div className="card-header">
               <h4>
-                Day {selectedDay.dayNumber} -{" "}
-                {new Date(selectedDay.date).toLocaleDateString("en-US", {
+                Day {currentSelectedDay.dayNumber} -{" "}
+                {new Date(currentSelectedDay.date).toLocaleDateString("en-US", {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
@@ -95,22 +92,22 @@ export default function Day() {
                     <div className="location-header">
                       <span className="location-badge start">START</span>
                       <span className="time">
-                        {selectedDay.startLocation.time}
+                        {currentSelectedDay.startLocation.time}
                       </span>
                     </div>
-                    <h6>{selectedDay.startLocation.name}</h6>
+                    <h6>{currentSelectedDay.startLocation.name}</h6>
                     <p className="text-muted">
-                      {selectedDay.startLocation.address}
+                      {currentSelectedDay.startLocation.address}
                     </p>
                     <small className="coordinates">
-                      📍 {selectedDay.startLocation.coordinates.lat},{" "}
-                      {selectedDay.startLocation.coordinates.lng}
+                      📍 {currentSelectedDay.startLocation.coordinates.lat},{" "}
+                      {currentSelectedDay.startLocation.coordinates.lng}
                     </small>
                   </div>
 
                   <div className="route-line">
                     <div className="distance-badge">
-                      🚗 {selectedDay.distance}
+                      🚗 {currentSelectedDay.distance}
                     </div>
                   </div>
 
@@ -118,16 +115,16 @@ export default function Day() {
                     <div className="location-header">
                       <span className="location-badge end">END</span>
                       <span className="time">
-                        {selectedDay.endLocation.time}
+                        {currentSelectedDay.endLocation.time}
                       </span>
                     </div>
-                    <h6>{selectedDay.endLocation.name}</h6>
+                    <h6>{currentSelectedDay.endLocation.name}</h6>
                     <p className="text-muted">
-                      {selectedDay.endLocation.address}
+                      {currentSelectedDay.endLocation.address}
                     </p>
                     <small className="coordinates">
-                      📍 {selectedDay.endLocation.coordinates.lat},{" "}
-                      {selectedDay.endLocation.coordinates.lng}
+                      📍 {currentSelectedDay.endLocation.coordinates.lat},{" "}
+                      {currentSelectedDay.endLocation.coordinates.lng}
                     </small>
                   </div>
                 </div>
@@ -136,18 +133,18 @@ export default function Day() {
                 <div className="col-md-6">
                   <h5>Activities</h5>
                   <ul className="activities-list">
-                    {selectedDay.activities.map((activity, index) => (
+                    {currentSelectedDay.activities.map((activity, index) => (
                       <li key={index}>{activity}</li>
                     ))}
                   </ul>
 
                   <h5 className="mt-4">Accommodation</h5>
                   <p className="accommodation">
-                    🏨 {selectedDay.accommodation}
+                    🏨 {currentSelectedDay.accommodation}
                   </p>
 
                   <h5 className="mt-4">Notes</h5>
-                  <p className="notes">{selectedDay.notes}</p>
+                  <p className="notes">{currentSelectedDay.notes}</p>
                 </div>
               </div>
             </div>
@@ -173,7 +170,9 @@ export default function Day() {
               {mockTripData.days.map((day) => (
                 <tr
                   key={day.id}
-                  className={selectedDay.id === day.id ? "table-active" : ""}
+                  className={
+                    currentSelectedDay.id === day.id ? "table-active" : ""
+                  }
                 >
                   <td>Day {day.dayNumber}</td>
                   <td>{new Date(day.date).toLocaleDateString()}</td>
