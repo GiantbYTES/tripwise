@@ -8,6 +8,18 @@
   flex-direction: column;
 }
 
+/* Full width for dashboard pages */
+#root.dashboard-root {
+  max-width: none;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 .app-content {
   flex: 1;
 }
