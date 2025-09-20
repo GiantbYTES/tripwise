@@ -8,9 +8,11 @@ import { mockTripData } from "../../utils/tripData";
 
 export default function DashboardPage() {
   const [selectedDay, setSelectedDay] = useState(mockTripData.days[0]);
+  const [selectedSection, setSelectedSection] = useState(null);
 
   const handleDaySelect = (day) => {
     setSelectedDay(day);
+    setSelectedSection(null); // Clear section when selecting a day
 
     // Highlight the selected day on the map
     if (window.mapHighlightDay) {
@@ -18,10 +20,25 @@ export default function DashboardPage() {
     }
   };
 
+  const handleSectionSelect = (section) => {
+    setSelectedSection(section);
+    setSelectedDay(null); // Clear day when selecting a section
+  };
+
   return (
     <div className="dashboard-container">
-      <Sidebar selectedDay={selectedDay} onDaySelect={handleDaySelect} />
-      <Body selectedDay={selectedDay} onDaySelect={handleDaySelect} />
+      <Sidebar
+        selectedDay={selectedDay}
+        onDaySelect={handleDaySelect}
+        selectedSection={selectedSection}
+        onSectionSelect={handleSectionSelect}
+      />
+      <Body
+        selectedDay={selectedDay}
+        onDaySelect={handleDaySelect}
+        selectedSection={selectedSection}
+        onSectionSelect={handleSectionSelect}
+      />
       <Map />
     </div>
   );

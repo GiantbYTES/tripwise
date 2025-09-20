@@ -31,7 +31,7 @@ export default function Day({ selectedDay, onDaySelect }) {
       </div>
 
       {/* Trip Overview Cards */}
-      <div className="row mb-4">
+      {/* <div className="row mb-4">
         <div className="col-md-12">
           <h3 className="mb-3">Trip Days</h3>
           <div className="row">
@@ -66,7 +66,7 @@ export default function Day({ selectedDay, onDaySelect }) {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Selected Day Details */}
       <div className="row">

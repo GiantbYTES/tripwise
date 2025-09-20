@@ -99,11 +99,21 @@
   margin-top: 0.9rem;
   margin-left: 1.25rem;
   text-decoration: none;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
 }
 
 .btn-toggle-nav a:hover,
 .btn-toggle-nav a:focus {
   background-color: var(--bs-tertiary-bg, #f8f9fa);
+}
+
+.btn-toggle-nav a.active {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+  border-left: 3px solid #1976d2;
+  padding-left: calc(0.5rem - 3px) !important;
+  font-weight: 600;
 }
 
 /* Day link styling */
