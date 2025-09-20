@@ -1,0 +1,84 @@
+.overview-container {
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.overview-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.overview-header h2 {
+  color: #2c5530;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.overview-header p {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.overview-navigation {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+.overview-nav-btn {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.overview-nav-btn:hover {
+  background-color: #f8f9fa;
+  color: #2c5530;
+}
+
+.overview-nav-btn.active {
+  background-color: #2c5530;
+  color: white;
+}
+
+.overview-nav-btn i {
+  font-size: 16px;
+}
+
+.overview-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .overview-navigation {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .overview-nav-btn {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .overview-nav-btn i {
+    font-size: 14px;
+  }
+}
