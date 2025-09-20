@@ -51,12 +51,12 @@ function MainNavbar() {
           </ul>
           <ul className="nav">
             <li className="nav-item">
-              <a href="#" className="nav-link link-body-emphasis px-2">
+              <Link to="/login" className="nav-link link-body-emphasis px-2">
                 Login
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <Link to="/signUp" className="nav-link link-body-emphasis px-2">
+              <Link to="/signup" className="nav-link link-body-emphasis px-2">
                 Sign up
               </Link>
             </li>

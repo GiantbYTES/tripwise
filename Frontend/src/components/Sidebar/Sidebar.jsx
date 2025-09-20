@@ -1,12 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Sidebar.css";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
+import { mockTripData } from "../../utils/tripData";
 
-export function Sidebar() {
+export function Sidebar({
+  selectedDay,
+  onDaySelect,
+  selectedSection,
+  onSectionSelect,
+}) {
   const [homeCollapsed, setHomeCollapsed] = useState(false);
   const [dashboardCollapsed, setDashboardCollapsed] = useState(true);
   const [ordersCollapsed, setOrdersCollapsed] = useState(true);
   const [accountCollapsed, setAccountCollapsed] = useState(true);
+
+  const handleDaySelect = (day) => {
+    setDashboardCollapsed(true);
+    setOrdersCollapsed(true);
+    if (onDaySelect) {
+      onDaySelect(day);
+    }
+  };
+
+  const handleSectionClick = (section) => {
+    if (section.startsWith("explore")) {
+      setDashboardCollapsed(false);
+      setOrdersCollapsed(true);
+    } else if (section.startsWith("overview")) {
+      setOrdersCollapsed(false);
+      setDashboardCollapsed(true);
+    }
+
+    if (onSectionSelect) {
+      onSectionSelect(section);
+    }
+  };
+
+  // Auto-expand appropriate sections when selectedSection changes
+  useEffect(() => {
+    if (selectedSection) {
+      if (selectedSection.startsWith("explore")) {
+        setDashboardCollapsed(false);
+      } else if (selectedSection.startsWith("overview")) {
+        setOrdersCollapsed(false);
+      }
+    }
+  }, [selectedSection]);
 
   return (
     <div className="sidebar-container">
@@ -40,31 +79,40 @@ export function Sidebar() {
             </button>
             <div className={`collapse ${!homeCollapsed ? "show" : ""}`}>
               <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                {/* <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Overview
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Updates
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Reports
-                  </a>
-                </li> */}
-                {/* TODO: filled with dates after user's input was inserted */}
+                {mockTripData.days.map((day) => (
+                  <li key={day.id}>
+                    <a
+                      href="#"
+                      className={`link-body-emphasis d-inline-flex text-decoration-none rounded day-link ${
+                        selectedDay && selectedDay.id === day.id ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (onDaySelect) {
+                          onDaySelect(day);
+                        }
+                      }}
+                    >
+                      <div className="day-link-content">
+                        <div className="day-header">
+                          <strong>Day {day.dayNumber}</strong>
+                          <small className="text-muted ms-1">
+                            {new Date(day.date).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </small>
+                        </div>
+                        <div className="day-route">
+                          <small className="text-muted">
+                            {day.startLocation.name.split(",")[0]} →{" "}
+                            {day.endLocation.name.split(",")[0]}
+                          </small>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </li>
@@ -81,7 +129,13 @@ export function Sidebar() {
                 <li>
                   <a
                     href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                      selectedSection === "explore-news" ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSectionClick("explore-news");
+                    }}
                   >
                     News
                   </a>
@@ -89,15 +143,15 @@ export function Sidebar() {
                 <li>
                   <a
                     href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Events
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                      selectedSection === "explore-recommendations"
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSectionClick("explore-recommendations");
+                    }}
                   >
                     Recommendations
                   </a>
@@ -105,7 +159,13 @@ export function Sidebar() {
                 <li>
                   <a
                     href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                      selectedSection === "explore-tips" ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSectionClick("explore-tips");
+                    }}
                   >
                     Tips
                   </a>
@@ -126,7 +186,13 @@ export function Sidebar() {
                 <li>
                   <a
                     href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                      selectedSection === "overview-budget" ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSectionClick("overview-budget");
+                    }}
                   >
                     Budget
                   </a>
@@ -134,7 +200,13 @@ export function Sidebar() {
                 <li>
                   <a
                     href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                      selectedSection === "overview-flights" ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSectionClick("overview-flights");
+                    }}
                   >
                     Flight Status
                   </a>
@@ -142,7 +214,13 @@ export function Sidebar() {
                 <li>
                   <a
                     href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                      selectedSection === "overview-checklist" ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSectionClick("overview-checklist");
+                    }}
                   >
                     Checklist
                   </a>
@@ -150,7 +228,13 @@ export function Sidebar() {
                 <li>
                   <a
                     href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                      selectedSection === "overview-additional" ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSectionClick("overview-additional");
+                    }}
                   >
                     More Information
                   </a>

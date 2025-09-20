@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {SignupPage} from "./pages/auth/SignupPage/SignupPage.jsx"
+import { SignupPage } from "./pages/auth/SignupPage/SignupPage.jsx";
 import HomePage from "./pages/HomePage/HomePage";
 import "./App.css";
 import { Route, Routes, useLocation } from "react-router-dom";
@@ -7,7 +7,8 @@ import MainNavbar from "./components/mainNavbar/mainNavbar";
 import Footer from "./components/footer/footer";
 import Dashboard from "./pages/DashboardPage/DashboardPage";
 import Error from "./pages/ErrorPage/ErrorPage";
-import TripForm from "./components/tripForm/tripForm";  
+import TripForm from "./components/tripForm/tripForm";
+import { LoginPage } from "./pages/auth/LoginPage/LoginPage.jsx";
 
 function App() {
   const location = useLocation();
@@ -67,11 +68,11 @@ function App() {
       <div className="app-content">
         <Routes>
           <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignupPage />}/>
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
-
           <Route path="/tripform" element={<TripForm />} />
-          
+
           <Route path="*" element={<Error />} />
         </Routes>
       </div>
