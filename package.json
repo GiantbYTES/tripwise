@@ -10,7 +10,7 @@
     "build": "cd Frontend && vite build",
     "lint": "cd Frontend && eslint .",
     "preview": "cd Frontend && vite preview",
-    "start": "node server-minimal.js"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "Amir Schaked ,Tzuriel Yeffet, Aviv Ben-Ezra, Assaf Mor",
