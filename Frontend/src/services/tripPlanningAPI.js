@@ -10,7 +10,7 @@ class TripPlanningAPI {
   
   async submitTripPlan(formData) {
     try {
-      console.log('🚀 Submitting trip plan to backend:', formData);
+      console.log('Submitting trip plan to backend from tripPlanningAPI:', formData);
       
       // Validate using shared validation
       const validation = TripValidation.validateFormData(formData);
