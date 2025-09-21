@@ -1,27 +1,35 @@
-import { useState } from 'react';
-import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap';
-import { 
-  COUNTRIES, 
-  TRIP_TYPES, 
-  TRAVELER_OPTIONS, 
-  ACCOMMODATION_TYPES, 
-  TRANSPORTATION_TYPES, 
-  INTEREST_OPTIONS 
-} from './tripFormConstants';
-import tripPlanningAPI from '../../services/tripPlanningAPI';
-import './TripForm.css';
+import { useState } from "react";
+import {
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  Card,
+  Alert,
+} from "react-bootstrap";
+import {
+  COUNTRIES,
+  TRIP_TYPES,
+  TRAVELER_OPTIONS,
+  ACCOMMODATION_TYPES,
+  TRANSPORTATION_TYPES,
+  INTEREST_OPTIONS,
+} from "./tripFormConstants";
+import tripPlanningAPI from "../../services/tripPlanningAPI";
+import "./TripForm.css";
 
 function TripForm() {
   const [formData, setFormData] = useState({
-    destination: '',
-    tripType: '',
-    travelers: '',
-    budget: '',
-    startDate: '',
-    endDate: '',
+    destination: "",
+    tripType: "",
+    travelers: "",
+    budget: "",
+    startDate: "",
+    endDate: "",
     interests: [],
-    accommodation: '',
-    transportation: ''
+    accommodation: "",
+    transportation: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -42,26 +50,26 @@ function TripForm() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
 
   const handleInterestChange = (interest) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       interests: prev.interests.includes(interest)
-        ? prev.interests.filter(item => item !== interest)
-        : [...prev.interests, interest]
+        ? prev.interests.filter((item) => item !== interest)
+        : [...prev.interests, interest],
     }));
   };
 
@@ -69,12 +77,14 @@ function TripForm() {
     const newErrors = {};
 
     // Basic required field check (detailed validation happens in API)
-    if (!formData.destination.trim()) newErrors.destination = 'Destination is required';
-    if (!formData.tripType) newErrors.tripType = 'Trip type is required';
-    if (!formData.travelers) newErrors.travelers = 'Number of travelers is required';
-    if (!formData.budget) newErrors.budget = 'Budget is required';
-    if (!formData.startDate) newErrors.startDate = 'Start date is required';
-    if (!formData.endDate) newErrors.endDate = 'End date is required';
+    if (!formData.destination.trim())
+      newErrors.destination = "Destination is required";
+    if (!formData.tripType) newErrors.tripType = "Trip type is required";
+    if (!formData.travelers)
+      newErrors.travelers = "Number of travelers is required";
+    if (!formData.budget) newErrors.budget = "Budget is required";
+    if (!formData.startDate) newErrors.startDate = "Start date is required";
+    if (!formData.endDate) newErrors.endDate = "End date is required";
 
     return newErrors;
   };
@@ -92,35 +102,35 @@ function TripForm() {
     }
 
     try {
-      console.log('Submitting trip plan from TripForm');
-      
+      console.log("🚀 Submitting trip plan...");
+
       // Submit to backend API (validation and formatting happens in API service)
       const result = await tripPlanningAPI.submitTripPlan(formData);
-      
+
       if (result.success) {
-        console.log('✅ Trip plan generated successfully:', result.data);
-        
+        console.log("✅ Trip plan generated successfully:", result.data);
+
         // Store the trip plan data
-        localStorage.setItem('generatedTripPlan', JSON.stringify(result.data));
-        localStorage.setItem('originalFormData', JSON.stringify(formData));
-        
+        localStorage.setItem("generatedTripPlan", JSON.stringify(result.data));
+        localStorage.setItem("originalFormData", JSON.stringify(formData));
+
         // Show success message
-        alert(`Trip plan "${result.data.tripName}" generated successfully! Check console for full details.`);
-        
+        alert(
+          `Trip plan "${result.data.tripName}" generated successfully! Check console for full details.`
+        );
+
         // TODO: Navigate to trip results page
         // navigate('/trip-results');
-        
       } else {
-        throw new Error(result.error || 'Failed to generate trip plan');
+        throw new Error(result.error || "Failed to generate trip plan");
       }
-      
     } catch (error) {
-      console.error('❌ Error submitting trip plan:', error);
-      
+      console.error("❌ Error submitting trip plan:", error);
+
       // Simple error handling - detailed handling is in shared modules
-      const errorMessage = error.message || 'Failed to generate trip plan. Please try again.';
+      const errorMessage =
+        error.message || "Failed to generate trip plan. Please try again.";
       setErrors({ submit: errorMessage });
-      
     } finally {
       setIsSubmitting(false);
     }
@@ -133,7 +143,10 @@ function TripForm() {
           <Card className="shadow-lg">
             <Card.Header className="bg-primary text-white text-center py-4">
               <h2 className="mb-0">Plan Your Perfect Trip</h2>
-              <p className="mb-0 mt-2">Tell us about your dream destination and we'll create a personalized itinerary</p>
+              <p className="mb-0 mt-2">
+                Tell us about your dream destination and we'll create a
+                personalized itinerary
+              </p>
             </Card.Header>
             <Card.Body className="p-4">
               {errors.submit && (
@@ -147,7 +160,9 @@ function TripForm() {
                 <Row className="mb-4">
                   <Col md={6}>
                     <Form.Group>
-                      <Form.Label className="fw-bold">Destination Country *</Form.Label>
+                      <Form.Label className="fw-bold">
+                        Destination Country *
+                      </Form.Label>
                       <Form.Select
                         name="destination"
                         value={formData.destination}
@@ -156,8 +171,10 @@ function TripForm() {
                         size="lg"
                       >
                         <option value="">Select a country...</option>
-                        {COUNTRIES.map(country => (
-                          <option key={country} value={country}>{country}</option>
+                        {COUNTRIES.map((country) => (
+                          <option key={country} value={country}>
+                            {country}
+                          </option>
                         ))}
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
@@ -176,8 +193,10 @@ function TripForm() {
                         size="lg"
                       >
                         <option value="">Select trip type...</option>
-                        {TRIP_TYPES.map(type => (
-                          <option key={type} value={type}>{type}</option>
+                        {TRIP_TYPES.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
                         ))}
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
@@ -191,7 +210,9 @@ function TripForm() {
                 <Row className="mb-4">
                   <Col md={6}>
                     <Form.Group>
-                      <Form.Label className="fw-bold">Number of Travelers *</Form.Label>
+                      <Form.Label className="fw-bold">
+                        Number of Travelers *
+                      </Form.Label>
                       <Form.Select
                         name="travelers"
                         value={formData.travelers}
@@ -200,8 +221,10 @@ function TripForm() {
                         size="lg"
                       >
                         <option value="">Select number of travelers...</option>
-                        {TRAVELER_OPTIONS.map(option => (
-                          <option key={option.value} value={option.value}>{option.label}</option>
+                        {TRAVELER_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
                         ))}
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
@@ -215,7 +238,9 @@ function TripForm() {
                 <Row className="mb-4">
                   <Col md={4}>
                     <Form.Group>
-                      <Form.Label className="fw-bold">Budget (USD) *</Form.Label>
+                      <Form.Label className="fw-bold">
+                        Budget (USD) *
+                      </Form.Label>
                       <Form.Control
                         type="number"
                         name="budget"
@@ -264,7 +289,10 @@ function TripForm() {
                       {tripDuration > 0 && (
                         <div className="mt-2">
                           <small className="text-muted">
-                            🗓️ Trip Duration: <strong>{tripDuration} day{tripDuration !== 1 ? 's' : ''}</strong>
+                            🗓️ Trip Duration:{" "}
+                            <strong>
+                              {tripDuration} day{tripDuration !== 1 ? "s" : ""}
+                            </strong>
                           </small>
                         </div>
                       )}
@@ -276,7 +304,9 @@ function TripForm() {
                 <Row className="mb-4">
                   <Col md={6}>
                     <Form.Group>
-                      <Form.Label className="fw-bold">Preferred Accommodation</Form.Label>
+                      <Form.Label className="fw-bold">
+                        Preferred Accommodation
+                      </Form.Label>
                       <Form.Select
                         name="accommodation"
                         value={formData.accommodation}
@@ -284,15 +314,19 @@ function TripForm() {
                         size="lg"
                       >
                         <option value="">Select accommodation type...</option>
-                        {ACCOMMODATION_TYPES.map(type => (
-                          <option key={type} value={type}>{type}</option>
+                        {ACCOMMODATION_TYPES.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
                         ))}
                       </Form.Select>
                     </Form.Group>
                   </Col>
                   <Col md={6}>
                     <Form.Group>
-                      <Form.Label className="fw-bold">Preferred Transportation</Form.Label>
+                      <Form.Label className="fw-bold">
+                        Preferred Transportation
+                      </Form.Label>
                       <Form.Select
                         name="transportation"
                         value={formData.transportation}
@@ -300,8 +334,10 @@ function TripForm() {
                         size="lg"
                       >
                         <option value="">Select transportation...</option>
-                        {TRANSPORTATION_TYPES.map(type => (
-                          <option key={type} value={type}>{type}</option>
+                        {TRANSPORTATION_TYPES.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
                         ))}
                       </Form.Select>
                     </Form.Group>
@@ -312,9 +348,11 @@ function TripForm() {
                 <Row className="mb-4">
                   <Col>
                     <Form.Group>
-                      <Form.Label className="fw-bold mb-3">Interests & Activities</Form.Label>
+                      <Form.Label className="fw-bold mb-3">
+                        Interests & Activities
+                      </Form.Label>
                       <div className="interests-grid">
-                        {INTEREST_OPTIONS.map(interest => (
+                        {INTEREST_OPTIONS.map((interest) => (
                           <Form.Check
                             key={interest}
                             type="checkbox"
@@ -332,19 +370,23 @@ function TripForm() {
 
                 {/* Submit Button */}
                 <div className="text-center">
-                  <Button 
-                    type="submit" 
-                    size="lg" 
+                  <Button
+                    type="submit"
+                    size="lg"
                     className="px-5 py-3 submit-btn"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
                       <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
                         Creating Your Trip Plan...
                       </>
                     ) : (
-                      'Create My Trip Plan'
+                      "Create My Trip Plan"
                     )}
                   </Button>
                 </div>
