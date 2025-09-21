@@ -7,7 +7,7 @@ import MainNavbar from "./components/mainNavbar/mainNavbar";
 import Footer from "./components/footer/footer";
 import Dashboard from "./pages/DashboardPage/DashboardPage";
 import Error from "./pages/ErrorPage/ErrorPage";
-import TripForm from "./components/tripForm/tripForm";
+import TripForm from "./components/tripForm/TripForm";
 import { LoginPage } from "./pages/auth/LoginPage/LoginPage.jsx";
 
 function App() {
