@@ -5,12 +5,13 @@ const tripPlanningModel = new TripPlanningModel();
 
 // New trip planning endpoint
 const generateTripPlan = async (req, res) => {
-  console.log("🎯 Trip plan request received");
+  console.log("Trip plan request received (inside geminiController)");
   
   try {
     const formData = req.body;
     
-    console.log('📝 Processing trip planning request for:', {
+    console.log('📝 Processing trip planning request for: (inside geminiController)',
+      {
       destination: formData.destination,
       tripType: formData.tripType,
       duration: formData.duration,
@@ -20,7 +21,7 @@ const generateTripPlan = async (req, res) => {
     // Generate trip plan using the model (validation happens inside)
     const result = await tripPlanningModel.generateTripPlan(formData);
     
-    console.log('✅ Trip plan generated successfully');
+    console.log('✅ Trip plan generated successfully (inside geminiController)');
     res.json(result);
     
   } catch (error) {
