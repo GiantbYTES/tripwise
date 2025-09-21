@@ -14,6 +14,7 @@ class TripPlanningAPI {
       
       // Validate using shared validation
       const validation = TripValidation.validateFormData(formData);
+
       if (!validation.isValid) {
         const errorMessage = Object.values(validation.errors).join(', ');
         throw new Error(`Validation failed: ${errorMessage}`);
@@ -21,7 +22,6 @@ class TripPlanningAPI {
       
       // Format using shared formatting
       const formattedData = TripValidation.formatFormData(formData);
-      
       const response = await fetch(`${API_BASE_URL}/gemini/plan-trip`, {
         method: 'POST',
         headers: {

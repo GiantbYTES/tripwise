@@ -8,7 +8,7 @@ const authRouter = require("./BackEnd/routes/authRouter.js");
 const geminiRouter = require("./BackEnd/routes/geminiRouter.js");
 
 const app = express();
-app.use(cookieParser)
+app.use(cookieParser())
 app.use(cors({
   origin: "http://localhost:5173", 
   credentials: true          
