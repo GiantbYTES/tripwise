@@ -10,7 +10,7 @@
     "build": "cd Frontend && vite build",
     "lint": "cd Frontend && eslint .",
     "preview": "cd Frontend && vite preview",
-    "start": "cd Frontend && vite preview --port $PORT --host 0.0.0.0 && node server.js"
+    "start": "npm run build && node app.js"
   },
   "keywords": [],
   "author": "Amir Schaked ,Tzuriel Yeffet, Aviv Ben-Ezra, Assaf Mor",
