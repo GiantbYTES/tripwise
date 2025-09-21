@@ -12,8 +12,21 @@ try {
   console.log("⚠️  Could not load database models:", error.message);
 }
 
-const authRouter = require("./BackEnd/routes/authRouter.js");
-const geminiRouter = require("./BackEnd/routes/geminiRouter.js");
+// Try to import routes, but don't fail if they don't work
+let authRouter, geminiRouter;
+try {
+  authRouter = require("./BackEnd/routes/authRouter.js");
+  console.log("✅ Auth router loaded successfully");
+} catch (error) {
+  console.log("⚠️  Could not load auth router:", error.message);
+}
+
+try {
+  geminiRouter = require("./BackEnd/routes/geminiRouter.js");
+  console.log("✅ Gemini router loaded successfully");
+} catch (error) {
+  console.log("⚠️  Could not load gemini router:", error.message);
+}
 
 const app = express();
 
@@ -37,8 +50,20 @@ app.use(express.static(path.join(__dirname, "node_modules")));
 // Serve the built React app
 app.use(express.static(path.join(__dirname, "Frontend/dist")));
 
-app.use("/auth", authRouter);
-app.use("/api/gemini", geminiRouter);
+// Conditionally use routes if they loaded successfully
+if (authRouter) {
+  app.use("/auth", authRouter);
+  console.log("✅ Auth routes mounted");
+} else {
+  console.log("⚠️  Auth routes not available");
+}
+
+if (geminiRouter) {
+  app.use("/api/gemini", geminiRouter);
+  console.log("✅ Gemini routes mounted");
+} else {
+  console.log("⚠️  Gemini routes not available");
+}
 
 // Health check endpoint
 app.get("/health", (req, res) => {
