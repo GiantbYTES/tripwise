@@ -92,7 +92,7 @@ function TripForm() {
     }
 
     try {
-      console.log('🚀 Submitting trip plan...');
+      console.log('Submitting trip plan from TripForm');
       
       // Submit to backend API (validation and formatting happens in API service)
       const result = await tripPlanningAPI.submitTripPlan(formData);
