@@ -7,10 +7,11 @@
     "dev": "cd Frontend && vite",
     "build": "cd Frontend && vite build",
     "lint": "cd Frontend && eslint .",
-    "preview": "cd Frontend && vite preview"
+    "preview": "cd Frontend && vite preview",
+    "start": "cd Frontend && vite preview --port 3000"
   },
   "keywords": [],
-  "author": "Amir Schaket ,Tzuriel Yeffet, Aviv Ben-Ezra,Assaf Mor",
+  "author": "Amir Schaked ,Tzuriel Yeffet, Aviv Ben-Ezra, Assaf Mor",
   "license": "ISC",
   "description": "",
   "dependencies": {
