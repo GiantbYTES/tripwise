@@ -85,6 +85,51 @@
   border-bottom: 1px solid #f1f3f4;
 }
 
+.flight-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-refresh {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  transition: all 0.3s ease;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: #e9ecef;
+  color: #2c5530;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-refresh .spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .flight-number h4 {
   margin: 0 0 8px 0;
   color: #2c5530;
@@ -180,6 +225,60 @@
   font-size: 14px;
 }
 
+.live-time {
+  font-size: 12px;
+  color: #007bff;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.actual-time {
+  font-size: 12px;
+  color: #28a745;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.terminal-gate {
+  font-size: 11px;
+  color: #6c757d;
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+
+.api-error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.api-error i {
+  color: #dc3545;
+}
+
+.mock-data-notice {
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  border: 1px solid #ffeaa7;
+}
+
+.mock-data-notice i {
+  color: #f39c12;
+}
+
 .label {
   font-size: 12px;
   color: #6c757d;
@@ -234,8 +333,20 @@
   margin-bottom: 0;
 }
 
-.update-item i {
-  color: #28a745;
+.update-item.live-data {
+  color: #007bff;
+}
+
+.update-item.live-data i {
+  color: #007bff;
+}
+
+.update-item.mock-data {
+  color: #856404;
+}
+
+.update-item.mock-data i {
+  color: #f39c12;
 }
 
 /* Flight Form */
@@ -248,9 +359,59 @@
 }
 
 .form-header h4 {
-  margin: 0 0 20px 0;
+  margin: 0 0 8px 0;
   color: #2c5530;
   font-weight: 600;
+}
+
+.form-description {
+  margin: 0 0 25px 0;
+  color: #6c757d;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.simple-form-section {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.flight-number-input {
+  font-size: 16px !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.flight-date-input {
+  font-size: 14px;
+}
+
+.help-text {
+  color: #6c757d;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+  font-style: italic;
+}
+
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background: #e3f2fd;
+  border: 1px solid #bbdefb;
+  border-radius: 8px;
+  color: #1976d2;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.loading-indicator i {
+  font-size: 16px;
 }
 
 .form-row {
@@ -349,8 +510,14 @@
   transition: background 0.3s ease;
 }
 
-.btn-save:hover {
+.btn-save:hover:not(:disabled) {
   background: #1e3a21;
+}
+
+.btn-save:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 /* Tracking Features */

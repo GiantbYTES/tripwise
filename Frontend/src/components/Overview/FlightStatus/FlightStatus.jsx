@@ -1,24 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./FlightStatus.css";
 import { mockTripData } from "../../../utils/tripData";
+import FlightService from "../../../services/flightService";
 
 export default function FlightStatus() {
   const [flightData, setFlightData] = useState(
     mockTripData.overview.flights.userFlights[0]
   );
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
+  const [liveFlightData, setLiveFlightData] = useState(null);
+  const [isMockData, setIsMockData] = useState(false);
   const [formData, setFormData] = useState({
     flightNumber: "",
-    airline: "",
-    departureAirport: "",
-    departureDate: "",
-    departureTime: "",
-    arrivalAirport: "",
-    arrivalDate: "",
-    arrivalTime: "",
+    flightDate: "",
   });
 
   const trackingFeatures = mockTripData.overview.flights.trackingFeatures;
+
+  // Fetch live flight data from API
+  const fetchFlightData = async (flightNumber, date = null) => {
+    setIsLoading(true);
+    setApiError(null);
+
+    try {
+      const result = await FlightService.getFormattedFlightStatus(
+        flightNumber,
+        date
+      );
+
+      if (result.success && result.data) {
+        setLiveFlightData(result.data);
+        setIsMockData(result.isMockData || false);
+        return result.data;
+      } else {
+        setApiError(result.error || "No flight data found");
+        return null;
+      }
+    } catch (error) {
+      setApiError("Failed to fetch flight data");
+      console.error("Flight data fetch error:", error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Auto-fetch flight data when component mounts if flight number exists
+  useEffect(() => {
+    if (
+      flightData.flightNumber &&
+      flightData.flightNumber !== "Not Added" &&
+      flightData.status === "Tracking Active"
+    ) {
+      const departureDate = FlightService.formatDateForAPI(
+        flightData.departure?.date
+      );
+      fetchFlightData(flightData.flightNumber, departureDate);
+    }
+  }, [flightData.flightNumber]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,38 +69,86 @@ export default function FlightStatus() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedFlight = {
-      ...flightData,
-      flightNumber: formData.flightNumber,
-      airline: formData.airline,
-      departure: {
-        airport: formData.departureAirport,
-        date: formData.departureDate,
-        time: formData.departureTime,
-      },
-      arrival: {
-        airport: formData.arrivalAirport,
-        date: formData.arrivalDate,
-        time: formData.arrivalTime,
-      },
-      status: "Tracking Active",
-    };
-    setFlightData(updatedFlight);
+    setIsLoading(true);
+
+    // Fetch live flight data from API
+    const departureDate = FlightService.formatDateForAPI(formData.flightDate);
+    const liveData = await fetchFlightData(
+      formData.flightNumber,
+      departureDate
+    );
+
+    if (liveData) {
+      // Create flight data from API response
+      const updatedFlight = {
+        flightNumber: formData.flightNumber,
+        airline: liveData.airline?.name || "Unknown Airline",
+        departure: {
+          airport: liveData.departure?.iata || "Unknown",
+          date: formData.flightDate || new Date().toISOString().split("T")[0],
+          time: liveData.departure?.scheduled
+            ? FlightService.formatTime(liveData.departure.scheduled)
+            : "TBD",
+          terminal: liveData.departure?.terminal,
+          gate: liveData.departure?.gate,
+          actualTime: liveData.departure?.actual
+            ? FlightService.formatTime(liveData.departure.actual)
+            : null,
+          estimatedTime: liveData.departure?.estimated
+            ? FlightService.formatTime(liveData.departure.estimated)
+            : null,
+          delay: liveData.departure?.delay,
+        },
+        arrival: {
+          airport: liveData.arrival?.iata || "Unknown",
+          date: formData.flightDate || new Date().toISOString().split("T")[0],
+          time: liveData.arrival?.scheduled
+            ? FlightService.formatTime(liveData.arrival.scheduled)
+            : "TBD",
+          terminal: liveData.arrival?.terminal,
+          gate: liveData.arrival?.gate,
+          actualTime: liveData.arrival?.actual
+            ? FlightService.formatTime(liveData.arrival.actual)
+            : null,
+          estimatedTime: liveData.arrival?.estimated
+            ? FlightService.formatTime(liveData.arrival.estimated)
+            : null,
+          delay: liveData.arrival?.delay,
+        },
+        status: "Tracking Active",
+        realTimeStatus: liveData.status,
+        aircraft: liveData.aircraft,
+      };
+      setFlightData(updatedFlight);
+    } else {
+      // Fallback if API fails - create basic flight entry
+      const basicFlight = {
+        flightNumber: formData.flightNumber,
+        airline: "Unknown Airline",
+        departure: {
+          airport: "Unknown",
+          date: formData.flightDate || new Date().toISOString().split("T")[0],
+          time: "TBD",
+        },
+        arrival: {
+          airport: "Unknown",
+          date: formData.flightDate || new Date().toISOString().split("T")[0],
+          time: "TBD",
+        },
+        status: "Manual Entry",
+      };
+      setFlightData(basicFlight);
+    }
+
     setIsEditing(false);
   };
 
   const handleEdit = () => {
     setFormData({
       flightNumber: flightData.flightNumber || "",
-      airline: flightData.airline || "",
-      departureAirport: flightData.departure?.airport || "",
-      departureDate: flightData.departure?.date || "",
-      departureTime: flightData.departure?.time || "",
-      arrivalAirport: flightData.arrival?.airport || "",
-      arrivalDate: flightData.arrival?.date || "",
-      arrivalTime: flightData.arrival?.time || "",
+      flightDate: flightData.departure?.date || "",
     });
     setIsEditing(true);
   };
@@ -109,14 +198,48 @@ export default function FlightStatus() {
                 }`}
               >
                 <i className="fas fa-circle"></i>
-                {flightData.status}
+                {liveFlightData?.status || flightData.status}
               </span>
             </div>
-            <button className="btn-edit" onClick={handleEdit}>
-              <i className="fas fa-edit"></i>
-              Edit
-            </button>
+            <div className="flight-actions">
+              <button
+                className="btn-refresh"
+                onClick={() => {
+                  const departureDate = FlightService.formatDateForAPI(
+                    flightData.departure?.date
+                  );
+                  fetchFlightData(flightData.flightNumber, departureDate);
+                }}
+                disabled={isLoading}
+                title="Refresh flight data"
+              >
+                <i
+                  className={`fas fa-sync-alt ${isLoading ? "spinning" : ""}`}
+                ></i>
+              </button>
+              <button className="btn-edit" onClick={handleEdit}>
+                <i className="fas fa-edit"></i>
+                Edit
+              </button>
+            </div>
           </div>
+
+          {apiError && !isMockData && (
+            <div className="api-error">
+              <i className="fas fa-exclamation-triangle"></i>
+              <span>Live data unavailable: {apiError}</span>
+            </div>
+          )}
+
+          {isMockData && (
+            <div className="mock-data-notice">
+              <i className="fas fa-info-circle"></i>
+              <span>
+                Demo Mode: Showing sample flight data (API blocked by CORS
+                policy)
+              </span>
+            </div>
+          )}
 
           <div className="flight-route">
             <div className="departure">
@@ -129,6 +252,23 @@ export default function FlightStatus() {
                   flightData.departure?.time
                 )}
               </div>
+              {liveFlightData?.departure?.estimatedTime && (
+                <div className="live-time">
+                  Est: {liveFlightData.departure.estimatedTime}
+                </div>
+              )}
+              {liveFlightData?.departure?.actualTime && (
+                <div className="actual-time">
+                  Actual: {liveFlightData.departure.actualTime}
+                </div>
+              )}
+              {liveFlightData?.departure?.terminal && (
+                <div className="terminal-gate">
+                  Terminal {liveFlightData.departure.terminal}
+                  {liveFlightData.departure.gate &&
+                    ` - Gate ${liveFlightData.departure.gate}`}
+                </div>
+              )}
               <div className="label">Departure</div>
             </div>
 
@@ -145,6 +285,23 @@ export default function FlightStatus() {
                   flightData.arrival?.time
                 )}
               </div>
+              {liveFlightData?.arrival?.estimatedTime && (
+                <div className="live-time">
+                  Est: {liveFlightData.arrival.estimatedTime}
+                </div>
+              )}
+              {liveFlightData?.arrival?.actualTime && (
+                <div className="actual-time">
+                  Actual: {liveFlightData.arrival.actualTime}
+                </div>
+              )}
+              {liveFlightData?.arrival?.terminal && (
+                <div className="terminal-gate">
+                  Terminal {liveFlightData.arrival.terminal}
+                  {liveFlightData.arrival.gate &&
+                    ` - Gate ${liveFlightData.arrival.gate}`}
+                </div>
+              )}
               <div className="label">Arrival</div>
             </div>
           </div>
@@ -159,6 +316,29 @@ export default function FlightStatus() {
                 <i className="fas fa-bell"></i>
                 <span>Notifications active</span>
               </div>
+              {liveFlightData && (
+                <div
+                  className={`update-item ${
+                    isMockData ? "mock-data" : "live-data"
+                  }`}
+                >
+                  <i
+                    className={`fas ${
+                      isMockData ? "fa-flask" : "fa-satellite"
+                    }`}
+                  ></i>
+                  <span>
+                    {isMockData ? "Demo data" : "Live data"}:{" "}
+                    {new Date().toLocaleTimeString()}
+                  </span>
+                </div>
+              )}
+              {liveFlightData?.aircraft?.registration && (
+                <div className="update-item">
+                  <i className="fas fa-plane"></i>
+                  <span>Aircraft: {liveFlightData.aircraft.registration}</span>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -166,22 +346,14 @@ export default function FlightStatus() {
         <div className="flight-form-card">
           <form onSubmit={handleSubmit} className="flight-form">
             <div className="form-header">
-              <h4>Flight Information</h4>
+              <h4>Add Flight for Tracking</h4>
+              <p className="form-description">
+                Enter your flight number and we'll automatically fetch all the
+                details and provide real-time tracking.
+              </p>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="airline">Airline</label>
-                <input
-                  type="text"
-                  id="airline"
-                  name="airline"
-                  value={formData.airline}
-                  onChange={handleInputChange}
-                  placeholder="e.g., American Airlines"
-                  required
-                />
-              </div>
+            <div className="simple-form-section">
               <div className="form-group">
                 <label htmlFor="flightNumber">Flight Number</label>
                 <input
@@ -190,107 +362,51 @@ export default function FlightStatus() {
                   name="flightNumber"
                   value={formData.flightNumber}
                   onChange={handleInputChange}
-                  placeholder="e.g., AA123"
+                  placeholder="e.g., AA123, DL456, UA789"
                   required
+                  className="flight-number-input"
                 />
+                <small className="help-text">
+                  Enter the airline code and flight number (e.g., AA123 for
+                  American Airlines flight 123)
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="flightDate">Flight Date (Optional)</label>
+                <input
+                  type="date"
+                  id="flightDate"
+                  name="flightDate"
+                  value={formData.flightDate}
+                  onChange={handleInputChange}
+                  className="flight-date-input"
+                />
+                <small className="help-text">
+                  Leave empty for today's flight or enter specific date
+                </small>
               </div>
             </div>
 
-            <div className="departure-section">
-              <h5>
-                <i className="fas fa-plane-departure"></i> Departure
-              </h5>
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="departureAirport">Airport Code</label>
-                  <input
-                    type="text"
-                    id="departureAirport"
-                    name="departureAirport"
-                    value={formData.departureAirport}
-                    onChange={handleInputChange}
-                    placeholder="e.g., JFK"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="departureDate">Date</label>
-                  <input
-                    type="date"
-                    id="departureDate"
-                    name="departureDate"
-                    value={formData.departureDate}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="departureTime">Time</label>
-                  <input
-                    type="time"
-                    id="departureTime"
-                    name="departureTime"
-                    value={formData.departureTime}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+            {isLoading && (
+              <div className="loading-indicator">
+                <i className="fas fa-spinner fa-spin"></i>
+                <span>Fetching flight information...</span>
               </div>
-            </div>
-
-            <div className="arrival-section">
-              <h5>
-                <i className="fas fa-plane-arrival"></i> Arrival
-              </h5>
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="arrivalAirport">Airport Code</label>
-                  <input
-                    type="text"
-                    id="arrivalAirport"
-                    name="arrivalAirport"
-                    value={formData.arrivalAirport}
-                    onChange={handleInputChange}
-                    placeholder="e.g., CDG"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="arrivalDate">Date</label>
-                  <input
-                    type="date"
-                    id="arrivalDate"
-                    name="arrivalDate"
-                    value={formData.arrivalDate}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="arrivalTime">Time</label>
-                  <input
-                    type="time"
-                    id="arrivalTime"
-                    name="arrivalTime"
-                    value={formData.arrivalTime}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
+            )}
 
             <div className="form-actions">
               <button
                 type="button"
                 className="btn-cancel"
                 onClick={() => setIsEditing(false)}
+                disabled={isLoading}
               >
                 Cancel
               </button>
-              <button type="submit" className="btn-save">
-                <i className="fas fa-save"></i>
-                Save Flight Details
+              <button type="submit" className="btn-save" disabled={isLoading}>
+                <i className="fas fa-search"></i>
+                {isLoading ? "Searching..." : "Track Flight"}
               </button>
             </div>
           </form>
