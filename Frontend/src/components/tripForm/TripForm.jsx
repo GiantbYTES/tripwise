@@ -9,7 +9,7 @@ import {
   INTEREST_OPTIONS 
 } from './tripFormConstants';
 import tripPlanningAPI from '../../services/tripPlanningAPI';
-import './tripForm.css';
+import './TripForm.css';
 
 function TripForm() {
   const [formData, setFormData] = useState({

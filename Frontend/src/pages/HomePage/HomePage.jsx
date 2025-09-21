@@ -3,7 +3,7 @@ import tripwiseLogo from "../../assets/tripwise_logo_new.png";
 import tripwiseExampleDashboard from "../../assets/example_dashboard.png";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import "./homePage.css";
+import "./HomePage.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function HomePage(props) {
