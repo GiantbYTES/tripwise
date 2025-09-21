@@ -4,13 +4,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "cd Frontend && npm run build",
+    "deploy": "cd Frontend && gh-pages -d dist",
     "dev": "cd Frontend && vite",
     "build": "cd Frontend && vite build",
     "lint": "cd Frontend && eslint .",
-    "preview": "cd Frontend && vite preview"
+    "preview": "cd Frontend && vite preview",
+    "start": "npm run build && node app.js"
   },
   "keywords": [],
-  "author": "Amir Schaket ,Tzuriel Yeffet, Aviv Ben-Ezra,Assaf Mor",
+  "author": "Amir Schaked ,Tzuriel Yeffet, Aviv Ben-Ezra, Assaf Mor",
   "license": "ISC",
   "description": "",
   "dependencies": {
@@ -56,6 +59,7 @@
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "gh-pages": "^6.3.0",
     "globals": "^16.3.0",
     "vite": "^7.1.2"
   }

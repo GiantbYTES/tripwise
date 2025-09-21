@@ -5,4 +5,8 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   envDir: "../", // Look for .env files in the parent directory
+  // base: "/tripwise/",
+  preview: {
+    allowedHosts: ["tripwise-nr4n.onrender.com"],
+  },
 });
