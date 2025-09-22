@@ -7,6 +7,31 @@ main.col-md-9.ms-sm-auto.col-lg-10.px-md-4 {
   flex: 1;
 }
 
+/* Compact Trip Header */
+.compact-trip-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #2c5530;
+}
+
+.trip-title {
+  color: #2c5530;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1;
+}
+
+.trip-details {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 /* Trip overview styling */
 .day-card {
   transition: all 0.3s ease;
@@ -214,6 +239,21 @@ h3 {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .compact-trip-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 6px 0;
+  }
+
+  .trip-title {
+    font-size: 1.35rem;
+  }
+
+  .trip-details {
+    font-size: 0.85rem;
+  }
+
   .day-card {
     margin-bottom: 1rem;
   }
