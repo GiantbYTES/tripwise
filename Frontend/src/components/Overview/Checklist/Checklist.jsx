@@ -27,6 +27,19 @@ export default function Checklist() {
     }
   };
 
+  const getItemsByCategory = (category) => {
+    switch (category) {
+      case "pre-travel":
+        return checklistItems.preTravel;
+      case "packing":
+        return checklistItems.packing;
+      case "during-trip":
+        return checklistItems.duringTrip;
+      default:
+        return [];
+    }
+  };
+
   const toggleItem = (itemId) => {
     setChecklistItems((prev) => {
       const newState = { ...prev };
@@ -99,22 +112,29 @@ export default function Checklist() {
       </div>
 
       <div className="category-navigation">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            className={`category-btn ${
-              activeCategory === category.id ? "active" : ""
-            }`}
-            onClick={() => setActiveCategory(category.id)}
-          >
-            <i className={`fas ${category.icon}`}></i>
-            {category.name}
-            <span className="item-count">
-              {getActiveItems().filter((item) => item.completed).length}/
-              {getActiveItems().length}
-            </span>
-          </button>
-        ))}
+        {categories.map((category) => {
+          const categoryItems = getItemsByCategory(category.id);
+          const completedCount = categoryItems.filter(
+            (item) => item.completed
+          ).length;
+          const totalCount = categoryItems.length;
+
+          return (
+            <button
+              key={category.id}
+              className={`category-btn ${
+                activeCategory === category.id ? "active" : ""
+              }`}
+              onClick={() => setActiveCategory(category.id)}
+            >
+              <i className={`fas ${category.icon}`}></i>
+              {category.name}
+              <span className="item-count">
+                {completedCount}/{totalCount}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="progress-section">
