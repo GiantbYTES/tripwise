@@ -7,6 +7,9 @@ const validateUserInput = require("../middlewares/validateUserInput.js")
 
 router.post('/login',validateUserInput,authController.login);
 router.post('/signup',validateUserInput, authController.signup);
+router.post('logout',validateUserInput,authController.logout)
+router.post('/refresh',validateUserInput,authController.refresh)
+
 
 router.get('/dashboard',authenticateToken,(req,res)=>{
 })

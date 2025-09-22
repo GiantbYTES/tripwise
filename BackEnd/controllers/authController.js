@@ -18,18 +18,22 @@ module.exports = {
       const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
         expiresIn: "1h",
       });
-      res.cookie("token", token, {
+      res.cookie("token", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "development",
-        sameSite: "lax",
+        sameSite: "strict",
         maxAge: 3600000,
       });
-      res
-        .status(201)
-        .json({
-          message: "Login successful",
-          user: { id: user.id, email: user.email },
-        });
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "development",
+        sameSite: "strict",
+      });
+      res.status(201).json({
+        message: "Login successful",
+        user: { id: user.id, email: user.email },
+      });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Login failed" });
@@ -47,6 +51,7 @@ module.exports = {
 
       const user = await User.create({ email, password: passwordHash });
 
+      const { accessToken, refreshToken } = generateTokens(user);
       const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
         expiresIn: "1h",
       });
@@ -67,4 +72,47 @@ module.exports = {
       res.status(500).json({ error: "Signup failed" });
     }
   },
+  logout: async (req, res) => {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+    res.status(200).json({ message: "Logged out successfuly" });
+  },
+  refresh: async(req,res)=>{
+    const refreshToken = req.cookie.refreshToken
+    if(!refreshToken) return res.status(401).json({message:"No refresh token!"})
+
+      try{
+        const decode = jwt.verify(refreshToken,process.env.JWT_REFRESH_SECRET)
+        const user = await User.findByPk(decode.id)
+        const {accessToken} = generateTokens(user)
+
+        res.cookie("token",accessToken,{httpOnly:true,sameSite:"strict"})
+        res.json({message:"Token refreshed"})
+      }catch(err){
+        console.error(err)
+        res.status(403).json({message:"Invalid refresh token"})
+      }
+  }
 };
+
+function generateTokens(user) {
+  const accessToken = jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+    },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: "1h" }
+  );
+
+  const refreshToken = jwt.sign(
+    { id: user.id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: "24h" }
+  );
+
+  return { accessToken, refreshToken };
+}
