@@ -40,11 +40,11 @@ main.col-md-9.ms-sm-auto.col-lg-10.px-md-4 {
   margin-bottom: 2rem;
 }
 
-.day-details-card .card-header {
+/* .day-details-card .card-header {
   background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
   border-bottom: none;
-}
+} */
 
 /* Location cards */
 .location-card {
