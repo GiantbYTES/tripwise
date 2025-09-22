@@ -1,17 +1,20 @@
 "use strict";
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn("Users", "password", {
-      password: {
+    const table = await queryInterface.describeTable("Users");
+    if (!table.password) {
+      await queryInterface.addColumn("Users", "password", {
         type: Sequelize.STRING,
-        allowNull: false,
-      },
-    });
+        allowNull: false
+      });
+    }
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("users");
-  },
+    const table = await queryInterface.describeTable("Users");
+    if (table.password) {
+      await queryInterface.removeColumn("Users", "password");
+    }
+  }
 };
