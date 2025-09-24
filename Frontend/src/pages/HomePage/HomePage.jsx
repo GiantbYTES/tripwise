@@ -1,6 +1,6 @@
 import React from "react";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
-import tripwiseExampleDashboard from "../../assets/example_dashboard.png";
+import tripwiseExampleDashboard from "../../assets/dashboard_example.png";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./HomePage.css";
@@ -28,14 +28,14 @@ export default function HomePage(props) {
       </div>
       <div
         className="overflow-hidden"
-        style={{ maxHeight: "30vh", marginTop: "4rem" }}
+        style={{ maxHeight: "70vh", marginTop: "4rem" }}
       >
         <div className="container px-5">
           <img
             src={tripwiseExampleDashboard}
             className="img-fluid border rounded-3 shadow-lg mb-4 homepage-dashboard-img"
             alt="Example image"
-            width="700"
+            width="1000"
             height="500"
             loading="lazy"
           />
