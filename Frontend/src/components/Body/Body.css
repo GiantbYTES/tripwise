@@ -7,6 +7,9 @@
   margin: 0;
   min-width: 0; /* Prevents flex item from overflowing */
   background-color: #ffffff;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 5;
 }
 
 /* Ensure the main content area within Body can scroll */
