@@ -16,3 +16,8 @@
 .dashboard-container > * {
   flex-shrink: 0;
 }
+
+/* Ensure modals appear above dashboard content */
+.modal {
+  z-index: 1050;
+}

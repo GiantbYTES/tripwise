@@ -8,6 +8,7 @@ export function Sidebar({
   onDaySelect,
   selectedSection,
   onSectionSelect,
+  onTripFormOpen,
 }) {
   const [homeCollapsed, setHomeCollapsed] = useState(false);
   const [dashboardCollapsed, setDashboardCollapsed] = useState(true);
@@ -48,7 +49,11 @@ export function Sidebar({
           <span className="fs-5 fw-semibold">TripWise</span>
         </a>
         <ul className="list-unstyled ps-0">
-          <button className="btn btn-success  px-5" type="button">
+          <button
+            className="btn btn-success px-5 mb-3"
+            type="button"
+            onClick={onTripFormOpen}
+          >
             AI TripWising
           </button>
           <li className="mb-1">

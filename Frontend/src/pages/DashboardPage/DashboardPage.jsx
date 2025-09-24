@@ -4,11 +4,13 @@ import { useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Map from "../../components/Map/Map";
 import Body from "../../components/Body/Body";
+import TripFormModal from "../../components/tripForm/TripFormModal";
 import { mockTripData } from "../../utils/tripData";
 
 export default function DashboardPage() {
   const [selectedDay, setSelectedDay] = useState(mockTripData.days[0]);
   const [selectedSection, setSelectedSection] = useState(null);
+  const [showTripFormModal, setShowTripFormModal] = useState(false);
 
   const handleDaySelect = (day) => {
     setSelectedDay(day);
@@ -25,6 +27,14 @@ export default function DashboardPage() {
     setSelectedDay(null); // Clear day when selecting a section
   };
 
+  const handleTripFormOpen = () => {
+    setShowTripFormModal(true);
+  };
+
+  const handleTripFormClose = () => {
+    setShowTripFormModal(false);
+  };
+
   return (
     <div className="dashboard-container">
       <Sidebar
@@ -32,6 +42,7 @@ export default function DashboardPage() {
         onDaySelect={handleDaySelect}
         selectedSection={selectedSection}
         onSectionSelect={handleSectionSelect}
+        onTripFormOpen={handleTripFormOpen}
       />
       <Body
         selectedDay={selectedDay}
@@ -40,6 +51,7 @@ export default function DashboardPage() {
         onSectionSelect={handleSectionSelect}
       />
       <Map />
+      <TripFormModal show={showTripFormModal} onHide={handleTripFormClose} />
     </div>
   );
 }
