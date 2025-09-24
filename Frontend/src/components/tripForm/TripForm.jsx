@@ -19,7 +19,7 @@ import {
 import tripPlanningAPI from "../../services/tripPlanningAPI";
 import "./TripForm.css";
 
-function TripForm() {
+function TripForm({ onClose, isModal = false }) {
   const [formData, setFormData] = useState({
     destination: "",
     tripType: "",
@@ -119,6 +119,11 @@ function TripForm() {
           `Trip plan "${result.data.tripName}" generated successfully! Check console for full details.`
         );
 
+        // Close modal if in modal mode
+        if (isModal && onClose) {
+          onClose();
+        }
+
         // TODO: Navigate to trip results page
         // navigate('/trip-results');
       } else {
@@ -136,6 +141,276 @@ function TripForm() {
     }
   };
 
+  // Form content that can be used in modal or standalone
+  const formContent = (
+    <div className={`${isModal ? "form-container" : ""}`}>
+      {errors.submit && (
+        <Alert variant="danger" className="mb-4">
+          {errors.submit}
+        </Alert>
+      )}
+
+      <Form onSubmit={handleSubmit}>
+        {/* Basic Trip Information */}
+        {isModal && (
+          <div className="section-title">
+            <i className="fas fa-map-marked-alt me-2"></i>
+            Basic Trip Information
+          </div>
+        )}
+
+        <Row className="mb-4">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label className="fw-bold">Destination Country *</Form.Label>
+              <Form.Select
+                name="destination"
+                value={formData.destination}
+                onChange={handleInputChange}
+                isInvalid={!!errors.destination}
+              >
+                <option value="">Select a country...</option>
+                {COUNTRIES.map((country) => (
+                  <option key={country} value={country}>
+                    {country}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                {errors.destination}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label className="fw-bold">Trip Type *</Form.Label>
+              <Form.Select
+                name="tripType"
+                value={formData.tripType}
+                onChange={handleInputChange}
+                isInvalid={!!errors.tripType}
+              >
+                <option value="">Select trip type...</option>
+                {TRIP_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                {errors.tripType}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {/* Trip Details Section */}
+        {isModal && (
+          <div className="section-title">
+            <i className="fas fa-users me-2"></i>
+            Trip Details & Budget
+          </div>
+        )}
+
+        {/* Travelers */}
+        <Row className="mb-4">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label className="fw-bold">Number of Travelers *</Form.Label>
+              <Form.Select
+                name="travelers"
+                value={formData.travelers}
+                onChange={handleInputChange}
+                isInvalid={!!errors.travelers}
+              >
+                <option value="">Select number of travelers...</option>
+                {TRAVELER_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                {errors.travelers}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {/* Budget and Dates */}
+        <Row className="mb-4">
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label className="fw-bold">Budget (USD) *</Form.Label>
+              <Form.Control
+                type="number"
+                name="budget"
+                value={formData.budget}
+                onChange={handleInputChange}
+                isInvalid={!!errors.budget}
+                placeholder="e.g., 2000"
+                min="0"
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.budget}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label className="fw-bold">Start Date *</Form.Label>
+              <Form.Control
+                type="date"
+                name="startDate"
+                value={formData.startDate}
+                onChange={handleInputChange}
+                isInvalid={!!errors.startDate}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.startDate}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label className="fw-bold">End Date *</Form.Label>
+              <Form.Control
+                type="date"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleInputChange}
+                isInvalid={!!errors.endDate}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.endDate}
+              </Form.Control.Feedback>
+              {tripDuration > 0 && (
+                <div className="mt-2">
+                  <small className="text-muted">
+                    🗓️ Trip Duration:{" "}
+                    <strong>
+                      {tripDuration} day{tripDuration !== 1 ? "s" : ""}
+                    </strong>
+                  </small>
+                </div>
+              )}
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {/* Preferences Section */}
+        {isModal && (
+          <div className="section-title">
+            <i className="fas fa-bed me-2"></i>
+            Travel Preferences
+          </div>
+        )}
+
+        {/* Accommodation and Transportation */}
+        <Row className="mb-4">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label className="fw-bold">
+                Preferred Accommodation
+              </Form.Label>
+              <Form.Select
+                name="accommodation"
+                value={formData.accommodation}
+                onChange={handleInputChange}
+              >
+                <option value="">Select accommodation type...</option>
+                {ACCOMMODATION_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label className="fw-bold">
+                Preferred Transportation
+              </Form.Label>
+              <Form.Select
+                name="transportation"
+                value={formData.transportation}
+                onChange={handleInputChange}
+              >
+                <option value="">Select transportation...</option>
+                {TRANSPORTATION_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {/* Interests Section */}
+        {isModal && (
+          <div className="section-title">
+            <i className="fas fa-heart me-2"></i>
+            Interests & Activities
+          </div>
+        )}
+
+        {/* Interests */}
+        <Row className="mb-4">
+          <Col>
+            <Form.Group>
+              <Form.Label className="fw-bold mb-3">
+                Interests & Activities
+              </Form.Label>
+              <div className="interests-grid">
+                {INTEREST_OPTIONS.map((interest) => (
+                  <Form.Check
+                    key={interest}
+                    type="checkbox"
+                    id={`interest-${interest}`}
+                    label={interest}
+                    checked={formData.interests.includes(interest)}
+                    onChange={() => handleInterestChange(interest)}
+                    className="interest-checkbox"
+                  />
+                ))}
+              </div>
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {/* Submit Button */}
+        <div className="text-center">
+          <Button
+            type="submit"
+            className="px-5 py-3 submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Creating Your Trip Plan...
+              </>
+            ) : (
+              "Create My Trip Plan"
+            )}
+          </Button>
+        </div>
+      </Form>
+    </div>
+  );
+
+  // Return different layouts based on mode
+  if (isModal) {
+    return formContent;
+  }
+
+  // Standalone page layout
   return (
     <Container className="trip-form-container py-5">
       <Row className="justify-content-center">
@@ -148,250 +423,7 @@ function TripForm() {
                 personalized itinerary
               </p>
             </Card.Header>
-            <Card.Body className="p-4">
-              {errors.submit && (
-                <Alert variant="danger" className="mb-4">
-                  {errors.submit}
-                </Alert>
-              )}
-
-              <Form onSubmit={handleSubmit}>
-                {/* Destination and Trip Type */}
-                <Row className="mb-4">
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">
-                        Destination Country *
-                      </Form.Label>
-                      <Form.Select
-                        name="destination"
-                        value={formData.destination}
-                        onChange={handleInputChange}
-                        isInvalid={!!errors.destination}
-                        size="lg"
-                      >
-                        <option value="">Select a country...</option>
-                        {COUNTRIES.map((country) => (
-                          <option key={country} value={country}>
-                            {country}
-                          </option>
-                        ))}
-                      </Form.Select>
-                      <Form.Control.Feedback type="invalid">
-                        {errors.destination}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">Trip Type *</Form.Label>
-                      <Form.Select
-                        name="tripType"
-                        value={formData.tripType}
-                        onChange={handleInputChange}
-                        isInvalid={!!errors.tripType}
-                        size="lg"
-                      >
-                        <option value="">Select trip type...</option>
-                        {TRIP_TYPES.map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </Form.Select>
-                      <Form.Control.Feedback type="invalid">
-                        {errors.tripType}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* Travelers */}
-                <Row className="mb-4">
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">
-                        Number of Travelers *
-                      </Form.Label>
-                      <Form.Select
-                        name="travelers"
-                        value={formData.travelers}
-                        onChange={handleInputChange}
-                        isInvalid={!!errors.travelers}
-                        size="lg"
-                      >
-                        <option value="">Select number of travelers...</option>
-                        {TRAVELER_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </Form.Select>
-                      <Form.Control.Feedback type="invalid">
-                        {errors.travelers}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* Budget and Dates */}
-                <Row className="mb-4">
-                  <Col md={4}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">
-                        Budget (USD) *
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleInputChange}
-                        isInvalid={!!errors.budget}
-                        placeholder="e.g., 2000"
-                        min="0"
-                        size="lg"
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.budget}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">Start Date *</Form.Label>
-                      <Form.Control
-                        type="date"
-                        name="startDate"
-                        value={formData.startDate}
-                        onChange={handleInputChange}
-                        isInvalid={!!errors.startDate}
-                        size="lg"
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.startDate}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">End Date *</Form.Label>
-                      <Form.Control
-                        type="date"
-                        name="endDate"
-                        value={formData.endDate}
-                        onChange={handleInputChange}
-                        isInvalid={!!errors.endDate}
-                        size="lg"
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.endDate}
-                      </Form.Control.Feedback>
-                      {tripDuration > 0 && (
-                        <div className="mt-2">
-                          <small className="text-muted">
-                            🗓️ Trip Duration:{" "}
-                            <strong>
-                              {tripDuration} day{tripDuration !== 1 ? "s" : ""}
-                            </strong>
-                          </small>
-                        </div>
-                      )}
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* Accommodation and Transportation */}
-                <Row className="mb-4">
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">
-                        Preferred Accommodation
-                      </Form.Label>
-                      <Form.Select
-                        name="accommodation"
-                        value={formData.accommodation}
-                        onChange={handleInputChange}
-                        size="lg"
-                      >
-                        <option value="">Select accommodation type...</option>
-                        {ACCOMMODATION_TYPES.map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">
-                        Preferred Transportation
-                      </Form.Label>
-                      <Form.Select
-                        name="transportation"
-                        value={formData.transportation}
-                        onChange={handleInputChange}
-                        size="lg"
-                      >
-                        <option value="">Select transportation...</option>
-                        {TRANSPORTATION_TYPES.map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* Interests */}
-                <Row className="mb-4">
-                  <Col>
-                    <Form.Group>
-                      <Form.Label className="fw-bold mb-3">
-                        Interests & Activities
-                      </Form.Label>
-                      <div className="interests-grid">
-                        {INTEREST_OPTIONS.map((interest) => (
-                          <Form.Check
-                            key={interest}
-                            type="checkbox"
-                            id={`interest-${interest}`}
-                            label={interest}
-                            checked={formData.interests.includes(interest)}
-                            onChange={() => handleInterestChange(interest)}
-                            className="interest-checkbox"
-                          />
-                        ))}
-                      </div>
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                {/* Submit Button */}
-                <div className="text-center">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="px-5 py-3 submit-btn"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Creating Your Trip Plan...
-                      </>
-                    ) : (
-                      "Create My Trip Plan"
-                    )}
-                  </Button>
-                </div>
-              </Form>
-            </Card.Body>
+            <Card.Body className="p-4">{formContent}</Card.Body>
           </Card>
         </Col>
       </Row>
