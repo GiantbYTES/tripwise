@@ -1,6 +1,9 @@
 import React from "react";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
 import tripwiseExampleDashboard from "../../assets/dashboard_example.png";
+import feature1Icon from "../../assets/icon1_new_transparent.png";
+import feature2Icon from "../../assets/icon2_new_transparent.png";
+import feature3Icon from "../../assets/icon3_new_transparent.png";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./HomePage.css";
@@ -41,75 +44,56 @@ export default function HomePage(props) {
           />
         </div>
       </div>
-      <div className="container px-4 py-5" id="featured-3">
-        {" "}
-        <h2 className="pb-2 border-bottom">Columns with icons</h2>{" "}
+      <div className="container px-4 py-5 feature-section" id="features">
+        <h2 className="pb-2 border-bottom text-center">Why Choose TripWise?</h2>
         <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
-          {" "}
           <div className="feature col">
-            {" "}
-            <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
-              {" "}
-              <svg className="bi" width="1em" height="1em" aria-hidden="true">
-                <use xlink:href="#collection"></use>
-              </svg>{" "}
-            </div>{" "}
-            <h3 className="fs-2 text-body-emphasis">Featured title</h3>{" "}
+            <div className="feature-icon-container">
+              <img
+                src={feature1Icon}
+                className="feature-icon-img icon1"
+                alt="Smart Planning Icon"
+              />
+            </div>
+            <h3 className="fs-4">Smart Planning</h3>
             <p>
-              Paragraph of text beneath the heading to explain the heading.
-              We'll add onto it with another sentence and probably just keep
-              going until we run out of words.
-            </p>{" "}
-            <a href="#" className="icon-link">
-              Call to action
-              <svg className="bi" aria-hidden="true">
-                <use xlink:href="#chevron-right"></use>
-              </svg>{" "}
-            </a>{" "}
-          </div>{" "}
+              Create personalized itineraries with AI-powered recommendations.
+              Get suggestions for destinations, activities, and accommodations
+              tailored to your preferences and budget.
+            </p>
+          </div>
           <div className="feature col">
-            {" "}
-            <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
-              {" "}
-              <svg className="bi" width="1em" height="1em" aria-hidden="true">
-                <use xlink:href="#people-circle"></use>
-              </svg>{" "}
-            </div>{" "}
-            <h3 className="fs-2 text-body-emphasis">Featured title</h3>{" "}
+            <div className="feature-icon-container">
+              <img
+                src={feature2Icon}
+                className="feature-icon-img icon2"
+                width="1000"
+                alt="Real-time Updates Icon"
+              />
+            </div>
+            <h3 className="fs-4">Real-time Updates</h3>
             <p>
-              Paragraph of text beneath the heading to explain the heading.
-              We'll add onto it with another sentence and probably just keep
-              going until we run out of words.
-            </p>{" "}
-            <a href="#" className="icon-link">
-              Call to action
-              <svg className="bi" aria-hidden="true">
-                <use xlink:href="#chevron-right"></use>
-              </svg>{" "}
-            </a>{" "}
-          </div>{" "}
+              Stay informed with live weather updates, flight status changes,
+              and local events. Never miss important travel information that
+              could affect your plans.
+            </p>
+          </div>
           <div className="feature col">
-            {" "}
-            <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
-              {" "}
-              <svg className="bi" width="1em" height="1em" aria-hidden="true">
-                <use xlink:href="#toggles2"></use>
-              </svg>{" "}
-            </div>{" "}
-            <h3 className="fs-2 text-body-emphasis">Featured title</h3>{" "}
+            <div className="feature-icon-container">
+              <img
+                src={feature3Icon}
+                className="feature-icon-img icon3"
+                alt="Smart Checklist Icon"
+              />
+            </div>
+            <h3 className="fs-4">Smart Checklist</h3>
             <p>
-              Paragraph of text beneath the heading to explain the heading.
-              We'll add onto it with another sentence and probably just keep
-              going until we run out of words.
-            </p>{" "}
-            <a href="#" className="icon-link">
-              Call to action
-              <svg className="bi" aria-hidden="true">
-                <use xlink:href="#chevron-right"></use>
-              </svg>{" "}
-            </a>{" "}
-          </div>{" "}
-        </div>{" "}
+              Never forget essential items with our intelligent packing and
+              travel checklist. Get customized suggestions based on your
+              destination, weather, and trip duration.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
