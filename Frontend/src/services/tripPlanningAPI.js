@@ -1,10 +1,7 @@
 // API service for trip planning requests
 import { TripValidation } from '../../../shared/tripValidation.js';
 import { TripErrorHandler } from '../../../shared/tripErrorHandler.js';
-
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-production-api.com/api' 
-  : 'http://localhost:3000/api';
+import {API_BASE_URL} from "../utils/config.js"
 
 class TripPlanningAPI {
   

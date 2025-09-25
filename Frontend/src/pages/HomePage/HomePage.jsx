@@ -4,8 +4,6 @@ import tripwiseExampleDashboard from "../../assets/dashboard_example.png";
 import feature1Icon from "../../assets/icon1_new_transparent.png";
 import feature2Icon from "../../assets/icon2_new_transparent.png";
 import feature3Icon from "../../assets/icon3_new_transparent.png";
-import { Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import "./HomePage.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 

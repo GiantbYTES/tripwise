@@ -5,9 +5,11 @@ import { EmailField } from "../../../components/auth/EmailField/EmailField.jsx";
 import { PasswordField } from "../../../components/auth/PasswordField/PasswordField.jsx";
 import { ConfirmPasswordField } from "../../../components/auth/ConfirmPasswordField/ConfirmPasswordField.jsx";
 import { AuthButton } from "../../../components/auth/AuthButton/AuthButton.jsx";
+import {useAuth} from "../../../context/AuthContext.jsx"
 import "../AuthPage.css";
 
 export function SignupPage() {
+  const {signup}  = useAuth()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,18 +24,9 @@ const navigate = useNavigate()
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),        
-      });
+     await signup(email,password)
 
-      if (!response.ok) {
-        throw new Error("Signup failed");
-      }
-      const data = await response.json();
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+    
       alert("Signup successful!");
       navigate("/dashboard",{
         replace:true,
