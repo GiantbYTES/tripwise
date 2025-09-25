@@ -1,10 +1,65 @@
 .homepage-container .btn-primary {
   background-color: #00eb5b !important;
   border-color: #00ab42 !important;
-  color: #000 !important;
+  color: #ffffff !important;
 }
 .homepage-container .btn-primary:hover {
   background-color: #00ab42 !important;
   border-color: #008f34 !important;
-  color: #000 !important;
+  color: #ffffff !important;
 }
+
+/* Feature section styling */
+.feature-section {
+  padding: 4rem 0;
+}
+
+.feature-section h2 {
+  color: #2c3e50;
+}
+
+.feature {
+  text-align: center;
+}
+
+.feature h3 {
+  color: #2c3e50;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.feature p {
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+/* Feature icon container with borders */
+.feature-icon-container {
+  width: 20rem;
+  height: 13rem;
+  display: inline-flex;
+  background-color: #f9f9f9;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e2e2;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.feature-icon-img {
+  width: 12rem;
+  height: 12rem;
+  object-fit: contain;
+}
+
+/* .icon1 {
+  width: 20rem;
+  height: 20rem;
+}
+.icon2 {
+  width: 12rem;
+  height: 12rem;
+}
+.icon3 {
+  width: 16rem;
+  height: 16rem;
+} */

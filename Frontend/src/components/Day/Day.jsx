@@ -13,60 +13,12 @@ export default function Day({ selectedDay, onDaySelect }) {
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 className="h2">{mockTripData.tripName}</h1>
-        <div className="btn-toolbar mb-2 mb-md-0">
-          <div className="btn-group me-2">
-            <button type="button" className="btn btn-sm btn-outline-secondary">
-              Share Trip
-            </button>
-            <button type="button" className="btn btn-sm btn-outline-secondary">
-              Export Route
-            </button>
-          </div>
-          <div className="badge bg-primary fs-6 px-3 py-2">
-            {mockTripData.duration} • {mockTripData.totalDistance}
-          </div>
-        </div>
+      <div className="compact-trip-header">
+        <h1 className="trip-title">{mockTripData.tripName}</h1>
+        <span className="trip-details">
+          {mockTripData.duration} • {mockTripData.totalDistance}
+        </span>
       </div>
-
-      {/* Trip Overview Cards */}
-      {/* <div className="row mb-4">
-        <div className="col-md-12">
-          <h3 className="mb-3">Trip Days</h3>
-          <div className="row">
-            {mockTripData.days.map((day) => (
-              <div key={day.id} className="col-md-2 mb-3">
-                <div
-                  className={`card day-card ${
-                    currentSelectedDay.id === day.id ? "selected" : ""
-                  }`}
-                  onClick={() => handleDaySelect(day)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <div className="card-body text-center">
-                    <h6 className="card-title">Day {day.dayNumber}</h6>
-                    <small className="text-muted">
-                      {new Date(day.date).toLocaleDateString()}
-                    </small>
-                    <div className="mt-2">
-                      <small className="route-info">
-                        {day.startLocation.name.split(",")[0]} →{" "}
-                        {day.endLocation.name.split(",")[0]}
-                      </small>
-                    </div>
-                    <div className="mt-1">
-                      <span className="badge bg-light text-dark">
-                        {day.distance}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div> */}
 
       {/* Selected Day Details */}
       <div className="row">
@@ -99,17 +51,17 @@ export default function Day({ selectedDay, onDaySelect }) {
                     <p className="text-muted">
                       {currentSelectedDay.startLocation.address}
                     </p>
-                    <small className="coordinates">
+                    {/* <small className="coordinates">
                       📍 {currentSelectedDay.startLocation.coordinates.lat},{" "}
                       {currentSelectedDay.startLocation.coordinates.lng}
-                    </small>
+                    </small> */}
                   </div>
 
-                  <div className="route-line">
+                  {/* <div className="route-line">
                     <div className="distance-badge">
                       🚗 {currentSelectedDay.distance}
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="location-card end-location">
                     <div className="location-header">
@@ -122,10 +74,10 @@ export default function Day({ selectedDay, onDaySelect }) {
                     <p className="text-muted">
                       {currentSelectedDay.endLocation.address}
                     </p>
-                    <small className="coordinates">
+                    {/* <small className="coordinates">
                       📍 {currentSelectedDay.endLocation.coordinates.lat},{" "}
                       {currentSelectedDay.endLocation.coordinates.lng}
-                    </small>
+                    </small> */}
                   </div>
                 </div>
 

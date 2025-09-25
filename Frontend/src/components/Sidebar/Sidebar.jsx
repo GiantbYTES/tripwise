@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./Sidebar.css";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
 import { mockTripData } from "../../utils/tripData";
@@ -8,6 +8,7 @@ export function Sidebar({
   onDaySelect,
   selectedSection,
   onSectionSelect,
+  onTripFormOpen,
 }) {
   const [homeCollapsed, setHomeCollapsed] = useState(false);
   const [dashboardCollapsed, setDashboardCollapsed] = useState(true);
@@ -15,37 +16,19 @@ export function Sidebar({
   const [accountCollapsed, setAccountCollapsed] = useState(true);
 
   const handleDaySelect = (day) => {
-    setDashboardCollapsed(true);
-    setOrdersCollapsed(true);
     if (onDaySelect) {
       onDaySelect(day);
     }
   };
 
   const handleSectionClick = (section) => {
-    if (section.startsWith("explore")) {
-      setDashboardCollapsed(false);
-      setOrdersCollapsed(true);
-    } else if (section.startsWith("overview")) {
-      setOrdersCollapsed(false);
-      setDashboardCollapsed(true);
-    }
-
     if (onSectionSelect) {
       onSectionSelect(section);
     }
   };
 
   // Auto-expand appropriate sections when selectedSection changes
-  useEffect(() => {
-    if (selectedSection) {
-      if (selectedSection.startsWith("explore")) {
-        setDashboardCollapsed(false);
-      } else if (selectedSection.startsWith("overview")) {
-        setOrdersCollapsed(false);
-      }
-    }
-  }, [selectedSection]);
+  // Removed to allow independent collapse state management
 
   return (
     <div className="sidebar-container">
@@ -66,7 +49,11 @@ export function Sidebar({
           <span className="fs-5 fw-semibold">TripWise</span>
         </a>
         <ul className="list-unstyled ps-0">
-          <button className="btn btn-success  px-5" type="button">
+          <button
+            className="btn btn-success px-5 mb-3"
+            type="button"
+            onClick={onTripFormOpen}
+          >
             AI TripWising
           </button>
           <li className="mb-1">
