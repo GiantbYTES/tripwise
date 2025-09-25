@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext.jsx";
 import { AuthForm } from "../../../components/auth/AuthForm/AuthForm.jsx";
 import { EmailField } from "../../../components/auth/EmailField/EmailField.jsx";
 import { PasswordField } from "../../../components/auth/PasswordField/PasswordField.jsx";
 import { AuthButton } from "../../../components/auth/AuthButton/AuthButton.jsx";
-
+import {apiFetch} from "../../../utils/apiFetch.js"
 import "./LoginPage.css";
 
 export function LoginPage() {
-  const navigate = useNavigate();
-
+  const {login} = useAuth()
+  const navigate = useNavigate()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,17 +22,7 @@ export function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const result = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!result.ok) {
-        setLoading(false);
-        throw new Error("Login failed");
-      }
+      await login(email,password)
       navigate("/dashboard", { replace: true, state: { formLogin: true } });
     } catch (err) {
       console.log(err);
