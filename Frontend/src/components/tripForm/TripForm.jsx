@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Form,
   Button,
@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import {
   COUNTRIES,
+  CITIES_BY_COUNTRY,
   TRIP_TYPES,
   TRAVELER_OPTIONS,
   ACCOMMODATION_TYPES,
@@ -22,6 +23,9 @@ import "./TripForm.css";
 function TripForm({ onClose, isModal = false }) {
   const [formData, setFormData] = useState({
     destination: "",
+    destinationCity: "",
+    returnDestination: "",
+    returnCity: "",
     tripType: "",
     travelers: "",
     budget: "",
@@ -35,12 +39,22 @@ function TripForm({ onClose, isModal = false }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Calculate trip duration for display
+  // Get cities for selected countries
+  const getDestinationCities = () => {
+    return formData.destination ? (CITIES_BY_COUNTRY[formData.destination] || []) : [];
+  };
+
+  const getReturnCities = () => {
+    return formData.returnDestination ? (CITIES_BY_COUNTRY[formData.returnDestination] || []) : [];
+  };
+
+  // Calculate trip duration for display (includes both start and end days)
   const calculateDuration = () => {
     if (formData.startDate && formData.endDate) {
       const startDate = new Date(formData.startDate);
       const endDate = new Date(formData.endDate);
-      const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+      // Add 1 to include both start and end days
+      const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
       return duration > 0 ? duration : 0;
     }
     return 0;
@@ -50,10 +64,29 @@ function TripForm({ onClose, isModal = false }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const newData = {
+        ...prev,
+        [name]: value,
+      };
+      
+      // If destination changes, clear destination city and update return destination
+      if (name === 'destination') {
+        newData.destinationCity = '';
+        // If return destination is empty or same as old destination, automatically update it
+        if (!prev.returnDestination || prev.returnDestination === prev.destination) {
+          newData.returnDestination = value;
+          newData.returnCity = '';
+        }
+      }
+      
+      // If return destination changes, clear return city
+      if (name === 'returnDestination') {
+        newData.returnCity = '';
+      }
+      
+      return newData;
+    });
 
     // Clear error when user starts typing
     if (errors[name]) {
@@ -76,15 +109,9 @@ function TripForm({ onClose, isModal = false }) {
   const validateForm = () => {
     const newErrors = {};
 
-    // Basic required field check (detailed validation happens in API)
+    // Only destination country is required - everything else is optional
     if (!formData.destination.trim())
-      newErrors.destination = "Destination is required";
-    if (!formData.tripType) newErrors.tripType = "Trip type is required";
-    if (!formData.travelers)
-      newErrors.travelers = "Number of travelers is required";
-    if (!formData.budget) newErrors.budget = "Budget is required";
-    if (!formData.startDate) newErrors.startDate = "Start date is required";
-    if (!formData.endDate) newErrors.endDate = "End date is required";
+      newErrors.destination = "Destination country is required";
 
     return newErrors;
   };
@@ -160,7 +187,7 @@ function TripForm({ onClose, isModal = false }) {
         )}
 
         <Row className="mb-4">
-          <Col md={6}>
+          <Col md={4}>
             <Form.Group>
               <Form.Label className="fw-bold">Destination Country *</Form.Label>
               <Form.Select
@@ -181,9 +208,39 @@ function TripForm({ onClose, isModal = false }) {
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={4}>
             <Form.Group>
-              <Form.Label className="fw-bold">Trip Type *</Form.Label>
+              <Form.Label className="fw-bold">Return Country</Form.Label>
+              <Form.Select
+                name="returnDestination"
+                value={formData.returnDestination}
+                onChange={handleInputChange}
+                isInvalid={!!errors.returnDestination}
+                disabled={!formData.destination}
+              >
+                <option value="">
+                  {!formData.destination 
+                    ? "Select destination country first..." 
+                    : "Select return country..."
+                  }
+                </option>
+                {COUNTRIES.map((country) => (
+                  <option key={country} value={country}>
+                    {country}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                {errors.returnDestination}
+              </Form.Control.Feedback>
+              <Form.Text className="text-muted">
+                <small>Defaults to destination country for round trips</small>
+              </Form.Text>
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label className="fw-bold">Trip Type</Form.Label>
               <Form.Select
                 name="tripType"
                 value={formData.tripType}
@@ -204,6 +261,64 @@ function TripForm({ onClose, isModal = false }) {
           </Col>
         </Row>
 
+        {/* City Selection Row */}
+        <Row className="mb-4">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label className="fw-bold">Destination City</Form.Label>
+              <Form.Select
+                name="destinationCity"
+                value={formData.destinationCity}
+                onChange={handleInputChange}
+                isInvalid={!!errors.destinationCity}
+                disabled={!formData.destination}
+              >
+                <option value="">
+                  {!formData.destination 
+                    ? "Select a country first..." 
+                    : "Select a city (optional)..."
+                  }
+                </option>
+                {getDestinationCities().map((city, index) => (
+                  <option key={`dest-${index}`} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                {errors.destinationCity}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label className="fw-bold">Return City</Form.Label>
+              <Form.Select
+                name="returnCity"
+                value={formData.returnCity}
+                onChange={handleInputChange}
+                isInvalid={!!errors.returnCity}
+                disabled={!formData.returnDestination}
+              >
+                <option value="">
+                  {!formData.returnDestination 
+                    ? "Select return country first..." 
+                    : "Select a city (optional)..."
+                  }
+                </option>
+                {getReturnCities().map((city, index) => (
+                  <option key={`return-${index}`} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                {errors.returnCity}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+        </Row>
+
         {/* Trip Details Section */}
         {isModal && (
           <div className="section-title">
@@ -216,7 +331,7 @@ function TripForm({ onClose, isModal = false }) {
         <Row className="mb-4">
           <Col md={6}>
             <Form.Group>
-              <Form.Label className="fw-bold">Number of Travelers *</Form.Label>
+              <Form.Label className="fw-bold">Number of Travelers</Form.Label>
               <Form.Select
                 name="travelers"
                 value={formData.travelers}
@@ -241,7 +356,7 @@ function TripForm({ onClose, isModal = false }) {
         <Row className="mb-4">
           <Col md={4}>
             <Form.Group>
-              <Form.Label className="fw-bold">Budget (USD) *</Form.Label>
+              <Form.Label className="fw-bold">Budget (USD)</Form.Label>
               <Form.Control
                 type="number"
                 name="budget"
@@ -258,7 +373,7 @@ function TripForm({ onClose, isModal = false }) {
           </Col>
           <Col md={4}>
             <Form.Group>
-              <Form.Label className="fw-bold">Start Date *</Form.Label>
+              <Form.Label className="fw-bold">Start Date</Form.Label>
               <Form.Control
                 type="date"
                 name="startDate"
@@ -273,7 +388,7 @@ function TripForm({ onClose, isModal = false }) {
           </Col>
           <Col md={4}>
             <Form.Group>
-              <Form.Label className="fw-bold">End Date *</Form.Label>
+              <Form.Label className="fw-bold">End Date</Form.Label>
               <Form.Control
                 type="date"
                 name="endDate"

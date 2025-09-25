@@ -4,12 +4,7 @@
  */
 
 export const REQUIRED_FIELDS = [
-  'destination', 
-  'tripType', 
-  'travelers', 
-  'budget', 
-  'startDate', 
-  'endDate'
+  'destination' // Only destination country is mandatory
 ];
 
 export class TripValidation {
@@ -25,11 +20,11 @@ export class TripValidation {
       }
     });
 
-    // Duration validation (calculated from dates)
+    // Duration validation (calculated from dates, includes both start and end days)
     if (formData.startDate && formData.endDate) {
       const startDate = new Date(formData.startDate);
       const endDate = new Date(formData.endDate);
-      const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+      const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
       
       if (duration < 1) {
         errors.endDate = 'End date must be after start date';
@@ -73,17 +68,19 @@ export class TripValidation {
   }
 
   static formatFormData(rawFormData) {
-    // Calculate duration from dates
+    // Calculate duration from dates (includes both start and end days)
     let duration = 0;
     if (rawFormData.startDate && rawFormData.endDate) {
       const startDate = new Date(rawFormData.startDate);
       const endDate = new Date(rawFormData.endDate);
-      duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+      duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
     }
 
     return {
       destination: rawFormData.destination?.trim() || '',
-      city: rawFormData.city?.trim() || '',
+      destinationCity: rawFormData.destinationCity?.trim() || '',
+      returnDestination: rawFormData.returnDestination?.trim() || '',
+      returnCity: rawFormData.returnCity?.trim() || '',
       tripType: rawFormData.tripType || '',
       travelers: parseInt(rawFormData.travelers) || 0,
       duration: duration, // Calculated automatically

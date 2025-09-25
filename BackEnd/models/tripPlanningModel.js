@@ -22,44 +22,62 @@ class TripPlanningModel {
 
   // Create the master prompt template
   buildTripPlanPrompt(formData) {
-    const basePrompt = `You are an expert travel planner. Create a comprehensive ${formData.duration}-day trip itinerary for ${formData.travelers} traveler(s) to ${formData.destination}${formData.city ? ` (specifically ${formData.city})` : ''}.
+    // Determine trip type based on destinations
+    const isMultiCountryTrip = formData.returnDestination && formData.returnDestination !== formData.destination;
+    const tripDescription = isMultiCountryTrip 
+      ? `${formData.destination} to ${formData.returnDestination}` 
+      : formData.destination;
+
+    // Build location descriptions
+    const startLocation = formData.destinationCity 
+      ? `${formData.destination} (specifically ${formData.destinationCity})` 
+      : formData.destination;
+    const endLocation = isMultiCountryTrip 
+      ? (formData.returnCity ? `${formData.returnDestination} (specifically ${formData.returnCity})` : formData.returnDestination)
+      : startLocation;
+
+    const basePrompt = `You are an expert travel planner. Create a comprehensive ${formData.duration || 'flexible'}-day trip itinerary for ${formData.travelers || 'solo'} traveler(s) ${isMultiCountryTrip ? `traveling from ${startLocation} to ${endLocation}` : `visiting ${startLocation}`}.
 
 TRIP DETAILS:
-- Destination: ${formData.destination}${formData.city ? ` - ${formData.city}` : ''}
-- Trip Type: ${formData.tripType}
-- Duration: ${formData.duration} days
-- Number of Travelers: ${formData.travelers}
-- Budget: $${formData.budget} USD total
-- Travel Dates: ${formData.startDate} to ${formData.endDate}
+- Start Location: ${startLocation}
+- End Location: ${endLocation}
+- Trip Type: ${formData.tripType || 'General exploration'}
+- Duration: ${formData.duration ? `${formData.duration} days` : 'Flexible duration'}
+- Number of Travelers: ${formData.travelers || 'Solo traveler'}
+- Budget: ${formData.budget ? `$${formData.budget} USD total` : 'Flexible budget'}
+- Travel Dates: ${formData.startDate && formData.endDate ? `${formData.startDate} to ${formData.endDate}` : 'Flexible dates'}
 - Preferred Accommodation: ${formData.accommodation || 'No specific preference'}
 - Preferred Transportation: ${formData.transportation || 'Mixed transportation options'}
 - Interests: ${formData.interests.length > 0 ? formData.interests.join(', ') : 'General sightseeing'}
+- Trip Style: ${isMultiCountryTrip ? 'Multi-country journey' : 'Single destination exploration'}
 
 REQUIREMENTS:
-1. Create a comprehensive day-by-day itinerary with detailed locations and activities
-2. Include realistic travel times, distances, and coordinates for all locations
-3. Provide specific hotel recommendations and activity suggestions
-4. Generate relevant local news, recommendations, and travel tips
-5. Create detailed budget breakdown and practical travel information
-6. Include weather forecasts, checklists, and emergency information
-7. Ensure all content matches the traveler's interests and trip type
-8. Make the trip realistic within the specified budget and timeframe
+1. Create a ${formData.duration ? `${formData.duration}-day` : 'flexible'} itinerary with detailed locations and activities
+2. ${isMultiCountryTrip ? 'Plan journey from start to end destination with logical routing' : 'Focus on comprehensive exploration of the destination'}
+3. Include realistic travel times, distances, and coordinates for all locations
+4. Provide specific hotel recommendations and activity suggestions
+5. Generate relevant local news, recommendations, and travel tips
+6. ${formData.budget ? `Create budget breakdown within $${formData.budget} USD` : 'Provide estimated costs for different budget ranges'}
+7. Include weather forecasts, checklists, and emergency information
+8. Ensure all content matches the traveler's interests and trip type
+9. ${isMultiCountryTrip ? 'Include border crossing information and multi-country logistics' : 'Maximize exploration within the single destination'}
+10. Handle flexible requirements gracefully when specific details are not provided
 
 OUTPUT FORMAT REQUIREMENTS:
 You MUST respond with a valid JSON object that exactly matches this comprehensive structure:
 
 {
   "tripName": "A creative name for this trip",
-  "duration": "${formData.duration} Days",
+  "duration": "${formData.duration ? `${formData.duration} Days` : 'Flexible Duration'}",
   "totalDistance": "Total estimated travel distance (e.g., '1,247 km')",
   "dateRange": {
-    "startDate": "${formData.startDate}",
-    "endDate": "${formData.endDate}"
+    "startDate": "${formData.startDate || 'Flexible'}",
+    "endDate": "${formData.endDate || 'Flexible'}"
   },
   "days": [
     {
       "id": 1,
-      "date": "YYYY-MM-DD (starting from ${formData.startDate})",
+      "date": "YYYY-MM-DD (${formData.startDate ? `starting from ${formData.startDate}` : 'flexible start date'})",
       "dayNumber": 1,
       "startLocation": {
         "name": "City, Country",
@@ -133,7 +151,7 @@ You MUST respond with a valid JSON object that exactly matches this comprehensiv
   "overview": {
     "budget": {
       "currency": "USD",
-      "totalEstimated": ${formData.budget},
+      "totalEstimated": ${formData.budget || 1000},
       "breakdown": {
         "accommodation": {
           "total": number,
@@ -246,16 +264,18 @@ You MUST respond with a valid JSON object that exactly matches this comprehensiv
 CRITICAL REQUIREMENTS:
 - Respond ONLY with valid JSON
 - Use real coordinates for actual places (precise latitude/longitude)
-- All dates in YYYY-MM-DD format
-- Include realistic pricing in the specified budget
+- All dates in YYYY-MM-DD format (or 'Flexible' if dates not provided)
+- ${formData.budget ? `Include realistic pricing within $${formData.budget} budget` : 'Provide estimated costs for different budget ranges'}
 - Generate 2-4 news articles per major destination
 - Provide 3-5 recommendations per category per major city
 - Include practical tips relevant to the destinations and travel style
 - Create comprehensive budget breakdown that adds up to the total
 - Include pre-travel and packing checklists with at least 5-7 items each
 - Add emergency contacts for each country visited
-- Provide weather forecasts for each day of travel
-- Ensure all activities match selected interests: ${formData.interests.join(', ') || 'general tourism'}
+- ${formData.startDate && formData.endDate ? 'Provide weather forecasts for each day of travel' : 'Provide general weather information for the season'}
+- Ensure all activities match selected interests: ${formData.interests.length > 0 ? formData.interests.join(', ') : 'general tourism'}
+- ${isMultiCountryTrip ? 'Include border crossing and multi-country travel logistics' : 'Focus on thorough exploration of single destination'}
+- Handle missing optional information gracefully by providing reasonable defaults
 
 Generate the complete comprehensive trip plan now:`;
 
