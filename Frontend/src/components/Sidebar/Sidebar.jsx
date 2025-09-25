@@ -13,7 +13,6 @@ export function Sidebar({
   const [homeCollapsed, setHomeCollapsed] = useState(false);
   const [dashboardCollapsed, setDashboardCollapsed] = useState(true);
   const [ordersCollapsed, setOrdersCollapsed] = useState(true);
-  const [accountCollapsed, setAccountCollapsed] = useState(true);
 
   const handleDaySelect = (day) => {
     if (onDaySelect) {
@@ -232,48 +231,13 @@ export function Sidebar({
           <li className="border-top my-3"></li>
           <li className="mb-1">
             <button
-              className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-              onClick={() => setAccountCollapsed(!accountCollapsed)}
-              aria-expanded={!accountCollapsed}
+              className="btn rounded border-0 text-start w-100 ps-4"
+              onClick={() => {
+                console.log("Sign out clicked");
+              }}
             >
-              Account
+              Sign Out
             </button>
-            <div className={`collapse ${!accountCollapsed ? "show" : ""}`}>
-              <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    New...
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Profile
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Settings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                  >
-                    Sign out
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
         </ul>
       </div>
