@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../utils/apiFetch.js";
@@ -6,7 +5,6 @@ import { apiFetch } from "../utils/apiFetch.js";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const navigate=useNavigate()
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 

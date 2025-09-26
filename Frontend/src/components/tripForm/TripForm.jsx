@@ -18,9 +18,12 @@ import {
   INTEREST_OPTIONS,
 } from "./tripFormConstants";
 import tripPlanningAPI from "../../services/tripPlanningAPI";
+import {useAuth} from "../../context/AuthContext"
 import "./TripForm.css";
+import { insertTripDataToDB } from "../../utils/insertTripDataToDB";
 
 function TripForm({ onClose, isModal = false }) {
+  const {user} = useAuth()
   const [formData, setFormData] = useState({
     destination: "",
     destinationCity: "",
@@ -136,7 +139,7 @@ function TripForm({ onClose, isModal = false }) {
 
       if (result.success) {
         console.log("✅ Trip plan generated successfully:", result.data);
-
+        insertTripDataToDB(user.id,result.data)
         // Store the trip plan data
         localStorage.setItem("generatedTripPlan", JSON.stringify(result.data));
         localStorage.setItem("originalFormData", JSON.stringify(formData));
