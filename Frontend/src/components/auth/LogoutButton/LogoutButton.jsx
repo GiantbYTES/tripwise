@@ -20,7 +20,7 @@ export function LogoutButton() {
       onClick={handleLogout}
       style={{ background: "none", border: "none", cursor: "pointer" }}
     >
-      Logout
+      Log Out
     </button>
   );
 }
