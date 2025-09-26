@@ -5,12 +5,12 @@ import { AuthForm } from "../../../components/auth/AuthForm/AuthForm.jsx";
 import { EmailField } from "../../../components/auth/EmailField/EmailField.jsx";
 import { PasswordField } from "../../../components/auth/PasswordField/PasswordField.jsx";
 import { AuthButton } from "../../../components/auth/AuthButton/AuthButton.jsx";
-import {apiFetch} from "../../../utils/apiFetch.js"
+import { apiFetch } from "../../../utils/apiFetch.js";
 import "./LoginPage.css";
 
 export function LoginPage() {
-  const {login} = useAuth()
-  const navigate = useNavigate()
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ export function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email,password)
+      await login(email, password);
       navigate("/dashboard", { replace: true, state: { formLogin: true } });
     } catch (err) {
       console.log(err);
@@ -42,11 +42,13 @@ export function LoginPage() {
               value={email}
               onChange={setEmail}
               onValidChange={setIsEmailValid}
+              showValidation={false}
             />
             <PasswordField
               value={password}
               onChange={setPassword}
               onValidChange={setIsPasswordValid}
+              showValidation={false}
             />
             <AuthButton
               text="Log in"
