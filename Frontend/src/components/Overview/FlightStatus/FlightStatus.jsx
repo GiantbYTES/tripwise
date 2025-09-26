@@ -1,11 +1,33 @@
 import { useState, useEffect } from "react";
 import "./FlightStatus.css";
-import { mockTripData } from "../../../utils/tripData";
+import { tripData } from "../../../utils/tripData";
 import FlightService from "../../../services/flightService";
 
 export default function FlightStatus() {
+  // Check if flight data exists, provide fallback if not
+  const flightsData = tripData?.overview?.flights;
+  const defaultFlightData = {
+    id: "flight1",
+    flightNumber: "",
+    airline: "",
+    departure: { airport: "", date: "", time: "" },
+    arrival: { airport: "", date: "", time: "" },
+    status: "Not Added",
+    addPrompt:
+      "Add your flight details to track status and get real-time updates",
+  };
+
+  // Default tracking features if not available from trip data
+  const defaultTrackingFeatures = [
+    "Real-time flight status updates",
+    "Gate and terminal information",
+    "Delay notifications",
+    "Check-in reminders",
+    "Baggage claim information",
+  ];
+
   const [flightData, setFlightData] = useState(
-    mockTripData.overview.flights.userFlights[0]
+    flightsData?.userFlights?.[0] || defaultFlightData
   );
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +39,8 @@ export default function FlightStatus() {
     flightDate: "",
   });
 
-  const trackingFeatures = mockTripData.overview.flights.trackingFeatures;
+  const trackingFeatures =
+    flightsData?.trackingFeatures || defaultTrackingFeatures;
 
   // Fetch live flight data from API
   const fetchFlightData = async (flightNumber, date = null) => {
@@ -213,9 +236,12 @@ export default function FlightStatus() {
                 disabled={isLoading}
                 title="Refresh flight data"
               >
-                <i
-                  className={`fas fa-sync-alt ${isLoading ? "spinning" : ""}`}
-                ></i>
+                <span
+                  className={isLoading ? "spinning" : ""}
+                  style={{ fontSize: "1.6em" }}
+                >
+                  ⟳
+                </span>
               </button>
               <button className="btn-edit" onClick={handleEdit}>
                 <i className="fas fa-edit"></i>

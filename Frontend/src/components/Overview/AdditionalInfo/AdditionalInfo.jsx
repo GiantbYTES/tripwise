@@ -1,10 +1,25 @@
 import { useState } from "react";
 import "./AdditionalInfo.css";
-import { mockTripData } from "../../../utils/tripData";
+import { tripData } from "../../../utils/tripData";
 
 export default function AdditionalInfo() {
   const [activeSection, setActiveSection] = useState("emergency");
-  const additionalInfo = mockTripData.overview.additionalInfo;
+  const additionalInfo = tripData?.overview?.additionalInfo;
+
+  // If no additional info data is available, show a message
+  if (!additionalInfo) {
+    return (
+      <div className="additional-info-container">
+        <div className="no-data-message">
+          <i className="fas fa-info-circle"></i>
+          <p>
+            No additional information available. Please generate a trip plan
+            first.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const sections = [
     { id: "emergency", name: "Emergency", icon: "fa-phone" },

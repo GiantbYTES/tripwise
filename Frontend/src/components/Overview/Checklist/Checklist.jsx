@@ -1,12 +1,39 @@
 import { useState } from "react";
 import "./Checklist.css";
-import { mockTripData } from "../../../utils/tripData";
+import { tripData } from "../../../utils/tripData";
 
 export default function Checklist() {
   const [activeCategory, setActiveCategory] = useState("pre-travel");
-  const [checklistItems, setChecklistItems] = useState(
-    mockTripData.overview.checklist
-  );
+
+  // Provide fallback data structure if tripData is incomplete
+  const defaultChecklist = {
+    preTravel: [],
+    packing: [],
+    duringTrip: [],
+  };
+
+  const checklistData = tripData?.overview?.checklist;
+
+  // If no checklist data is available, show a message
+  if (!checklistData) {
+    return (
+      <div className="checklist-container">
+        <div className="no-data-message">
+          <i className="fas fa-list-check"></i>
+          <p>No checklist data available. Please generate a trip plan first.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Ensure all required properties exist with safe fallbacks
+  const safeChecklist = {
+    preTravel: checklistData.preTravel || [],
+    packing: checklistData.packing || [],
+    duringTrip: checklistData.duringTrip || [],
+  };
+
+  const [checklistItems, setChecklistItems] = useState(safeChecklist);
 
   const categories = [
     { id: "pre-travel", name: "Pre-Travel", icon: "fa-calendar-check" },
@@ -17,11 +44,11 @@ export default function Checklist() {
   const getActiveItems = () => {
     switch (activeCategory) {
       case "pre-travel":
-        return checklistItems.preTravel;
+        return checklistItems.preTravel || [];
       case "packing":
-        return checklistItems.packing;
+        return checklistItems.packing || [];
       case "during-trip":
-        return checklistItems.duringTrip;
+        return checklistItems.duringTrip || [];
       default:
         return [];
     }
@@ -30,11 +57,11 @@ export default function Checklist() {
   const getItemsByCategory = (category) => {
     switch (category) {
       case "pre-travel":
-        return checklistItems.preTravel;
+        return checklistItems.preTravel || [];
       case "packing":
-        return checklistItems.packing;
+        return checklistItems.packing || [];
       case "during-trip":
-        return checklistItems.duringTrip;
+        return checklistItems.duringTrip || [];
       default:
         return [];
     }
@@ -50,7 +77,7 @@ export default function Checklist() {
           ? "duringTrip"
           : "packing";
 
-      newState[categoryKey] = newState[categoryKey].map((item) =>
+      newState[categoryKey] = (newState[categoryKey] || []).map((item) =>
         item.id === itemId ? { ...item, completed: !item.completed } : item
       );
 
@@ -243,10 +270,10 @@ export default function Checklist() {
           {categories.map((category) => {
             const items =
               category.id === "pre-travel"
-                ? checklistItems.preTravel
+                ? checklistItems.preTravel || []
                 : category.id === "during-trip"
-                ? checklistItems.duringTrip
-                : checklistItems.packing;
+                ? checklistItems.duringTrip || []
+                : checklistItems.packing || [];
             const completed = items.filter((item) => item.completed).length;
             const progress =
               items.length > 0

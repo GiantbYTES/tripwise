@@ -1,10 +1,22 @@
 import { useState } from "react";
 import "./Budget.css";
-import { mockTripData } from "../../../utils/tripData";
+import { tripData } from "../../../utils/tripData";
 
 export default function Budget() {
   const [activeCategory, setActiveCategory] = useState("overview");
-  const budgetData = mockTripData.overview.budget;
+  const budgetData = tripData?.overview?.budget;
+
+  // If no budget data is available, show a message
+  if (!budgetData) {
+    return (
+      <div className="budget-container">
+        <div className="no-data-message">
+          <i className="fas fa-calculator"></i>
+          <p>No budget data available. Please generate a trip plan first.</p>
+        </div>
+      </div>
+    );
+  }
 
   const categories = [
     { id: "overview", name: "Overview", icon: "fa-chart-pie" },
@@ -29,7 +41,7 @@ export default function Budget() {
         <div className="total-amount">
           {formatCurrency(budgetData.totalEstimated)}
         </div>
-        <p className="budget-note">For {mockTripData.duration} trip</p>
+        <p className="budget-note">For {tripData.duration} trip</p>
       </div>
 
       <div className="budget-breakdown-chart">
@@ -61,7 +73,7 @@ export default function Budget() {
           <i className="fas fa-lightbulb"></i> Money-Saving Tips
         </h4>
         <div className="tips-grid">
-          {budgetData.budgetTips.map((tip, index) => (
+          {(budgetData.budgetTips || []).map((tip, index) => (
             <div key={index} className="tip-card">
               <h6>{tip.category}</h6>
               <p>{tip.tip}</p>

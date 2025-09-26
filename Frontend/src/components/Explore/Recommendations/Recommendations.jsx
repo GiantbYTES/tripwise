@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./Recommendations.css";
-import { mockTripData, getAllUniqueLocations } from "../../../utils/tripData";
+import { tripData, getAllUniqueLocations } from "../../../utils/tripData";
 
 export default function Recommendations() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -16,7 +16,11 @@ export default function Recommendations() {
   ];
 
   const getFilteredRecommendations = () => {
-    let filtered = mockTripData.explore.recommendations;
+    if (!tripData?.explore?.recommendations) {
+      return [];
+    }
+
+    let filtered = tripData.explore.recommendations;
 
     if (activeCategory !== "all") {
       filtered = filtered.filter(

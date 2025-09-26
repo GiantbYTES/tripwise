@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import {
-  mockTripData,
+  tripData,
   getAllLocations,
   getAllRoutes,
   getTripBounds,
@@ -198,7 +198,7 @@ const MapboxExample = () => {
     });
 
     // Update route styles
-    mockTripData.days.forEach((day) => {
+    (tripData?.days || []).forEach((day) => {
       const routeId = `route-${day.id}`;
       if (mapRef.current.getLayer(routeId)) {
         mapRef.current.setPaintProperty(
@@ -242,10 +242,10 @@ const MapboxExample = () => {
         </div>
         <div className="legend-stats">
           <small>
-            <strong>{mockTripData.duration}</strong>
+            <strong>{tripData?.duration || "N/A"}</strong>
           </small>
           <br />
-          <small>{mockTripData.totalDistance} total</small>
+          <small>{tripData?.totalDistance || "N/A"} total</small>
         </div>
       </div>
     </div>

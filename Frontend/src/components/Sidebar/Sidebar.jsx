@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./Sidebar.css";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
-import { mockTripData } from "../../utils/tripData";
+import { tripData } from "../../utils/tripData";
 
 export function Sidebar({
   selectedDay,
@@ -65,7 +65,7 @@ export function Sidebar({
             </button>
             <div className={`collapse ${!homeCollapsed ? "show" : ""}`}>
               <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                {mockTripData.days.map((day) => (
+                {(tripData?.days || []).map((day) => (
                   <li key={day.id}>
                     <a
                       href="#"

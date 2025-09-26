@@ -1,9 +1,21 @@
 import "./Day.css";
-import { mockTripData } from "../../utils/tripData";
+import { tripData } from "../../utils/tripData";
 
 export default function Day({ selectedDay, onDaySelect }) {
   // Use the selectedDay from props, fallback to first day if not provided
-  const currentSelectedDay = selectedDay || mockTripData.days[0];
+  const currentSelectedDay = selectedDay || tripData?.days?.[0];
+
+  // If no trip data is available, show a message
+  if (!tripData || !tripData.days || tripData.days.length === 0) {
+    return (
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div className="no-data-message">
+          <i className="fas fa-calendar-alt"></i>
+          <p>No trip data available. Please generate a trip plan first.</p>
+        </div>
+      </main>
+    );
+  }
 
   const handleDaySelect = (day) => {
     if (onDaySelect) {
@@ -14,9 +26,9 @@ export default function Day({ selectedDay, onDaySelect }) {
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div className="compact-trip-header">
-        <h1 className="trip-title">{mockTripData.tripName}</h1>
+        <h1 className="trip-title">{tripData?.tripName || "Trip Plan"}</h1>
         <span className="trip-details">
-          {mockTripData.duration} • {mockTripData.totalDistance}
+          {tripData?.duration || "N/A"} • {tripData?.totalDistance || "N/A"}
         </span>
       </div>
 
@@ -119,7 +131,7 @@ export default function Day({ selectedDay, onDaySelect }) {
               </tr>
             </thead>
             <tbody>
-              {mockTripData.days.map((day) => (
+              {tripData.days.map((day) => (
                 <tr
                   key={day.id}
                   className={

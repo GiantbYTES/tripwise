@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./Tips.css";
-import { mockTripData } from "../../../utils/tripData";
+import { tripData } from "../../../utils/tripData";
 
 export default function Tips() {
   const [activeCategory, setActiveCategory] = useState("transportation");
@@ -12,8 +12,12 @@ export default function Tips() {
   ];
 
   const getActiveTips = () => {
+    if (!tripData?.explore?.tips) {
+      return [];
+    }
+
     return (
-      mockTripData.explore.tips.find(
+      tripData.explore.tips.find(
         (tipCategory) =>
           tipCategory.category.toLowerCase() === activeCategory.toLowerCase()
       )?.tips || []

@@ -5,10 +5,10 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import Map from "../../components/Map/Map";
 import Body from "../../components/Body/Body";
 import TripFormModal from "../../components/tripForm/TripFormModal";
-import { mockTripData } from "../../utils/tripData";
+import { tripData } from "../../utils/tripData";
 
 export default function DashboardPage() {
-  const [selectedDay, setSelectedDay] = useState(mockTripData.days[0]);
+  const [selectedDay, setSelectedDay] = useState(tripData?.days?.[0] || null);
   const [selectedSection, setSelectedSection] = useState(null);
   const [showTripFormModal, setShowTripFormModal] = useState(false);
 
