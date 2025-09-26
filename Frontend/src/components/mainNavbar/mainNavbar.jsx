@@ -21,7 +21,7 @@ function MainNavbar() {
       }}
     >
       <div className="container">
-        <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <div className="d-flex flex-wrap align-items-center justify-content-between">
           <Link
             to="/"
             className="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
@@ -33,8 +33,9 @@ function MainNavbar() {
               height="32"
               className="me-2"
             />
+            <span className="fs-5 fw-semibold">TripWise</span>
           </Link>
-          <ul className="nav">
+          <ul className="nav ms-auto">
             {user ? (
               <li className="nav-item">
                 <LogoutButton />
