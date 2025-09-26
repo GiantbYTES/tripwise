@@ -2,7 +2,7 @@
 import { TripValidation } from '../../../shared/tripValidation.js';
 import { TripErrorHandler } from '../../../shared/tripErrorHandler.js';
 import {API_BASE_URL} from "../utils/config.js"
-import { apiFetch } from '../utils/apiFetch.js';
+import {apiFetch} from "../utils/apiFetch.js"
 
 class TripPlanningAPI {
   
@@ -25,7 +25,6 @@ class TripPlanningAPI {
         body: JSON.stringify(formattedData)
       });
 
-  
       console.log('✅ Trip plan generated successfully:', result);
       
       return result;

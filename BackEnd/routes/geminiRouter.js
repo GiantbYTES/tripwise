@@ -5,6 +5,6 @@ const authenticateToken = require("../middlewares/authenticateToken");
 
 
 // New trip planning endpoint
-router.post("/plan-trip", geminiController.generateTripPlan);
+router.post("/plan-trip", authenticateToken, geminiController.generateTripPlan);
 
 module.exports = router;
