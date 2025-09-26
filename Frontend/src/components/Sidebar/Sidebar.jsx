@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./Sidebar.css";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
 import { tripData } from "../../utils/tripData";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function Sidebar({
   selectedDay,
@@ -13,6 +15,8 @@ export function Sidebar({
   const [homeCollapsed, setHomeCollapsed] = useState(false);
   const [dashboardCollapsed, setDashboardCollapsed] = useState(true);
   const [ordersCollapsed, setOrdersCollapsed] = useState(true);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleDaySelect = (day) => {
     if (onDaySelect) {
@@ -23,6 +27,17 @@ export function Sidebar({
   const handleSectionClick = (section) => {
     if (onSectionSelect) {
       onSectionSelect(section);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      // Even if logout fails, redirect to home page
+      navigate("/", { replace: true });
     }
   };
 
@@ -232,9 +247,8 @@ export function Sidebar({
           <li className="mb-1">
             <button
               className="btn rounded border-0 text-start w-100 ps-4"
-              onClick={() => {
-                console.log("Sign out clicked");
-              }}
+              onClick={handleSignOut}
+              style={{ cursor: "pointer" }}
             >
               Sign Out
             </button>
