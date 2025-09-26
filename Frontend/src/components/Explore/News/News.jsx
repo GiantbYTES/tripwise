@@ -1,16 +1,20 @@
 import { useState } from "react";
 import "./News.css";
-import { mockTripData, getAllUniqueLocations } from "../../../utils/tripData";
+import { tripData, getAllUniqueLocations } from "../../../utils/tripData";
 
 export default function News() {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const locations = getAllUniqueLocations();
 
   const getFilteredNews = () => {
-    if (selectedLocation === "all") {
-      return mockTripData.explore.news;
+    if (!tripData?.explore?.news) {
+      return [];
     }
-    return mockTripData.explore.news.filter((item) =>
+
+    if (selectedLocation === "all") {
+      return tripData.explore.news;
+    }
+    return tripData.explore.news.filter((item) =>
       item.location.toLowerCase().includes(selectedLocation.toLowerCase())
     );
   };

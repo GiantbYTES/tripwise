@@ -909,11 +909,18 @@ export const mockTripData = {
   },
 };
 
+const parsedData = JSON.parse(localStorage.getItem("generatedTripPlan"));
+export const tripData = parsedData || mockTripData;
+
 // Helper functions to extract map data
 export const getAllLocations = () => {
   const locations = [];
 
-  mockTripData.days.forEach((day) => {
+  if (!tripData || !tripData.days) {
+    return [];
+  }
+
+  tripData.days.forEach((day) => {
     // Add start location
     locations.push({
       ...day.startLocation,
@@ -943,7 +950,11 @@ export const getAllLocations = () => {
 };
 
 export const getAllRoutes = () => {
-  return mockTripData.days.map((day) => ({
+  if (!tripData || !tripData.days) {
+    return [];
+  }
+
+  return tripData.days.map((day) => ({
     id: day.id,
     dayNumber: day.dayNumber,
     date: day.date,
@@ -956,9 +967,18 @@ export const getAllRoutes = () => {
 };
 
 export const getTripBounds = () => {
+  if (!tripData || !tripData.days) {
+    return {
+      north: 90,
+      south: -90,
+      east: 180,
+      west: -180,
+    };
+  }
+
   const allCoords = [];
 
-  mockTripData.days.forEach((day) => {
+  tripData.days.forEach((day) => {
     allCoords.push(day.startLocation.coordinates);
     allCoords.push(day.endLocation.coordinates);
   });
@@ -976,34 +996,54 @@ export const getTripBounds = () => {
 
 // Helper functions for Explore section
 export const getNewsByLocation = (location) => {
+  if (!tripData || !tripData.explore || !tripData.explore.news) {
+    return [];
+  }
+
   return (
-    mockTripData.explore.news.find((item) =>
+    tripData.explore.news.find((item) =>
       item.location.toLowerCase().includes(location.toLowerCase())
     )?.articles || []
   );
 };
 
 export const getNewsByDate = (date) => {
+  if (!tripData || !tripData.explore || !tripData.explore.news) {
+    return [];
+  }
+
   return (
-    mockTripData.explore.news.find((item) => item.date === date)?.articles || []
+    tripData.explore.news.find((item) => item.date === date)?.articles || []
   );
 };
 
 export const getRecommendationsByCategory = (category) => {
-  return mockTripData.explore.recommendations.filter(
+  if (!tripData || !tripData.explore || !tripData.explore.recommendations) {
+    return [];
+  }
+
+  return tripData.explore.recommendations.filter(
     (rec) => rec.category.toLowerCase() === category.toLowerCase()
   );
 };
 
 export const getRecommendationsByLocation = (location) => {
-  return mockTripData.explore.recommendations.filter((rec) =>
+  if (!tripData || !tripData.explore || !tripData.explore.recommendations) {
+    return [];
+  }
+
+  return tripData.explore.recommendations.filter((rec) =>
     rec.location.toLowerCase().includes(location.toLowerCase())
   );
 };
 
 export const getTipsByCategory = (category) => {
+  if (!tripData || !tripData.explore || !tripData.explore.tips) {
+    return [];
+  }
+
   return (
-    mockTripData.explore.tips.find(
+    tripData.explore.tips.find(
       (tip) => tip.category.toLowerCase() === category.toLowerCase()
     )?.tips || []
   );
@@ -1011,33 +1051,68 @@ export const getTipsByCategory = (category) => {
 
 // Helper functions for Overview section
 export const getBudgetByCategory = (category) => {
-  return mockTripData.overview.budget.breakdown[category] || null;
+  if (
+    !tripData ||
+    !tripData.overview ||
+    !tripData.overview.budget ||
+    !tripData.overview.budget.breakdown
+  ) {
+    return null;
+  }
+
+  return tripData.overview.budget.breakdown[category] || null;
 };
 
 export const getTotalBudget = () => {
-  return mockTripData.overview.budget.totalEstimated;
+  if (!tripData || !tripData.overview || !tripData.overview.budget) {
+    return 0;
+  }
+
+  return tripData.overview.budget.totalEstimated;
 };
 
 export const getChecklistByCategory = (category) => {
+  if (!tripData || !tripData.overview || !tripData.overview.checklist) {
+    return [];
+  }
+
   const categories = {
-    "pre-travel": mockTripData.overview.checklist.preTravel,
-    packing: mockTripData.overview.checklist.packing,
-    "during-trip": mockTripData.overview.checklist.duringTrip,
+    "pre-travel": tripData.overview.checklist.preTravel || [],
+    packing: tripData.overview.checklist.packing || [],
+    "during-trip": tripData.overview.checklist.duringTrip || [],
   };
   return categories[category] || [];
 };
 
 export const getEmergencyContactsByCountry = (country) => {
+  if (
+    !tripData ||
+    !tripData.overview ||
+    !tripData.overview.additionalInfo ||
+    !tripData.overview.additionalInfo.emergencyContacts
+  ) {
+    return null;
+  }
+
   return (
-    mockTripData.overview.additionalInfo.emergencyContacts.find(
+    tripData.overview.additionalInfo.emergencyContacts.find(
       (contact) => contact.country.toLowerCase() === country.toLowerCase()
     ) || null
   );
 };
 
 export const getWeatherByDate = (date) => {
+  if (
+    !tripData ||
+    !tripData.overview ||
+    !tripData.overview.additionalInfo ||
+    !tripData.overview.additionalInfo.weatherForecast
+  ) {
+    return null;
+  }
+
   return (
-    mockTripData.overview.additionalInfo.weatherForecast.find(
+    tripData.overview.additionalInfo.weatherForecast.find(
       (weather) => weather.date === date
     ) || null
   );
@@ -1045,8 +1120,12 @@ export const getWeatherByDate = (date) => {
 
 // Helper function to get all unique locations for filters
 export const getAllUniqueLocations = () => {
+  if (!tripData || !tripData.days) {
+    return [];
+  }
+
   const locations = new Set();
-  mockTripData.days.forEach((day) => {
+  tripData.days.forEach((day) => {
     locations.add(day.startLocation.name.split(",")[0]); // Get city name only
     locations.add(day.endLocation.name.split(",")[0]);
   });
@@ -1055,9 +1134,17 @@ export const getAllUniqueLocations = () => {
 
 // Helper function to get trip dates range
 export const getTripDates = () => {
+  if (!tripData) {
+    return {
+      startDate: null,
+      endDate: null,
+      duration: null,
+    };
+  }
+
   return {
-    startDate: mockTripData.dateRange.startDate,
-    endDate: mockTripData.dateRange.endDate,
-    duration: mockTripData.duration,
+    startDate: tripData.dateRange?.startDate || null,
+    endDate: tripData.dateRange?.endDate || null,
+    duration: tripData.duration || null,
   };
 };
