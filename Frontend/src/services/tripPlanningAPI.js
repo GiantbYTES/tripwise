@@ -2,6 +2,7 @@
 import { TripValidation } from '../../../shared/tripValidation.js';
 import { TripErrorHandler } from '../../../shared/tripErrorHandler.js';
 import {API_BASE_URL} from "../utils/config.js"
+import {apiFetch} from "../utils/apiFetch.js"
 
 class TripPlanningAPI {
   
@@ -16,23 +17,21 @@ class TripPlanningAPI {
         const errorMessage = Object.values(validation.errors).join(', ');
         throw new Error(`Validation failed: ${errorMessage}`);
       }
+
+      console.log(API_BASE_URL)
       
       // Format using shared formatting
       const formattedData = TripValidation.formatFormData(formData);
-      const response = await fetch(`${API_BASE_URL}/gemini/plan-trip`, {
+      const response = await apiFetch(`/api/gemini/plan-trip`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // },
         body: JSON.stringify(formattedData)
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
+      // apiFetch already handles JSON parsing and error checking
+      const result = response;
       console.log('✅ Trip plan generated successfully:', result);
       
       return result;

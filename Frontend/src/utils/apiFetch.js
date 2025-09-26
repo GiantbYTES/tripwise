@@ -27,7 +27,7 @@ export async function apiFetch(endpoint, options = {}) {
       if (!isRefreshing) {
         isRefreshing = true;
         try {
-          const refreshRes = await fetch("/auth/refresh", {
+          const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
             method: "POST",
             credentials: "include",
           });
