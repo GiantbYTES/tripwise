@@ -1,33 +1,122 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-import {
-  tripData,
-  getAllLocations,
-  getAllRoutes,
-  getTripBounds,
-} from "../../utils/tripData";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.css";
 
-const MapboxExample = () => {
+const MapboxExample = ({ tripData: propTripData, hasGeneratedTrip }) => {
   const mapContainerRef = useRef();
   const mapRef = useRef();
   const markersRef = useRef([]);
   const [selectedDay, setSelectedDay] = useState(null);
 
+  // Use tripData from props or fallback to checking localStorage
+  const tripData = propTripData;
+  const hasTrip = hasGeneratedTrip;
+
+  const getAllLocationsFromTrip = () => {
+    const locations = [];
+
+    if (!tripData || !tripData.days) {
+      return [];
+    }
+
+    tripData.days.forEach((day) => {
+      // Add start location
+      locations.push({
+        ...day.startLocation,
+        type: "start",
+        dayNumber: day.dayNumber,
+        date: day.date,
+      });
+
+      // Add end location (but avoid duplicates when end of one day is start of next)
+      const isDuplicate = locations.some(
+        (loc) =>
+          loc.coordinates.lat === day.endLocation.coordinates.lat &&
+          loc.coordinates.lng === day.endLocation.coordinates.lng
+      );
+
+      if (!isDuplicate) {
+        locations.push({
+          ...day.endLocation,
+          type: "end",
+          dayNumber: day.dayNumber,
+          date: day.date,
+        });
+      }
+    });
+
+    return locations;
+  };
+
+  const getAllRoutesFromTrip = () => {
+    if (!tripData || !tripData.days) {
+      return [];
+    }
+
+    return tripData.days.map((day) => ({
+      id: day.id,
+      dayNumber: day.dayNumber,
+      date: day.date,
+      start: day.startLocation.coordinates,
+      end: day.endLocation.coordinates,
+      startName: day.startLocation.name,
+      endName: day.endLocation.name,
+      distance: day.distance,
+    }));
+  };
+
+  const getTripBoundsFromTrip = () => {
+    if (!tripData || !tripData.days) {
+      return {
+        north: 90,
+        south: -90,
+        east: 180,
+        west: -180,
+      };
+    }
+
+    const allCoords = [];
+
+    tripData.days.forEach((day) => {
+      allCoords.push(day.startLocation.coordinates);
+      allCoords.push(day.endLocation.coordinates);
+    });
+
+    const lats = allCoords.map((coord) => coord.lat);
+    const lngs = allCoords.map((coord) => coord.lng);
+
+    return {
+      north: Math.max(...lats),
+      south: Math.min(...lats),
+      east: Math.max(...lngs),
+      west: Math.min(...lngs),
+    };
+  };
+
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY;
 
-    // Get trip bounds to center the map
-    const bounds = getTripBounds();
-    const centerLat = (bounds.north + bounds.south) / 2;
-    const centerLng = (bounds.east + bounds.west) / 2;
+    // Default map center and zoom for when there's no trip data
+    let centerLat = 48.8566; // Paris latitude as default
+    let centerLng = 2.3522; // Paris longitude as default
+    let zoomLevel = 4; // Wider view for Europe
+
+    // If there's trip data, center on the trip bounds
+    if (hasTrip && tripData) {
+      const bounds = getTripBoundsFromTrip();
+      if (bounds) {
+        centerLat = (bounds.north + bounds.south) / 2;
+        centerLng = (bounds.east + bounds.west) / 2;
+        zoomLevel = 5;
+      }
+    }
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      center: [centerLng, centerLat], // Center on trip area
-      zoom: 5, // Adjusted for European trip
+      center: [centerLng, centerLat],
+      zoom: zoomLevel,
       style: "mapbox://styles/mapbox/streets-v12",
       projection: "mercator",
       renderWorldCopies: false,
@@ -38,7 +127,9 @@ const MapboxExample = () => {
     });
 
     mapRef.current.on("load", () => {
-      addTripData();
+      if (hasTrip && tripData) {
+        addTripData();
+      }
     });
 
     // Cleanup function
@@ -51,11 +142,13 @@ const MapboxExample = () => {
         mapRef.current.remove();
       }
     };
-  }, []);
+  }, [hasTrip, tripData]);
 
   const addTripData = () => {
-    const locations = getAllLocations();
-    const routes = getAllRoutes();
+    if (!tripData) return;
+
+    const locations = getAllLocationsFromTrip();
+    const routes = getAllRoutesFromTrip();
 
     // Clear existing markers
     markersRef.current.forEach((marker) => marker.remove());
@@ -227,26 +320,36 @@ const MapboxExample = () => {
     <div className="map-wrapper">
       <div ref={mapContainerRef} className="map-container" />
       <div className="map-legend">
-        <h6>Trip Legend</h6>
-        <div className="legend-item">
-          <div className="legend-marker start"></div>
-          <span>Start Location</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-marker end"></div>
-          <span>End Location</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-line"></div>
-          <span>Daily Route</span>
-        </div>
-        <div className="legend-stats">
-          <small>
-            <strong>{tripData?.duration || "N/A"}</strong>
-          </small>
-          <br />
-          <small>{tripData?.totalDistance || "N/A"} total</small>
-        </div>
+        <h6>Map Legend</h6>
+        {hasTrip && tripData ? (
+          <>
+            <div className="legend-item">
+              <div className="legend-marker start"></div>
+              <span>Start Location</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-marker end"></div>
+              <span>End Location</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-line"></div>
+              <span>Daily Route</span>
+            </div>
+            <div className="legend-stats">
+              <small>
+                <strong>{tripData.duration || "N/A"}</strong>
+              </small>
+              <br />
+              <small>{tripData.totalDistance || "N/A"} total</small>
+            </div>
+          </>
+        ) : (
+          <div className="legend-stats">
+            <small className="text-muted">
+              Generate your first trip to see routes and locations on the map!
+            </small>
+          </div>
+        )}
       </div>
     </div>
   );

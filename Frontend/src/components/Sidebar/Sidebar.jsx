@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./Sidebar.css";
 import tripwiseLogo from "../../assets/tripwise_logo_new.png";
-import { tripData } from "../../utils/tripData";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +10,8 @@ export function Sidebar({
   selectedSection,
   onSectionSelect,
   onTripFormOpen,
+  tripData,
+  hasGeneratedTrip = false,
 }) {
   const [homeCollapsed, setHomeCollapsed] = useState(false);
   const [dashboardCollapsed, setDashboardCollapsed] = useState(true);
@@ -70,6 +71,14 @@ export function Sidebar({
           >
             AI TripWising
           </button>
+          {!hasGeneratedTrip && (
+            <div className="mb-3 p-3 bg-light rounded">
+              <small className="text-muted">
+                👋 Welcome! Click "AI TripWising" above to generate your first
+                trip and unlock all features.
+              </small>
+            </div>
+          )}
           <li className="mb-1">
             <button
               className="btn btn-toggle d-inline-flex align-items-center rounded border-0"
@@ -80,169 +89,191 @@ export function Sidebar({
             </button>
             <div className={`collapse ${!homeCollapsed ? "show" : ""}`}>
               <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                {(tripData?.days || []).map((day) => (
-                  <li key={day.id}>
-                    <a
-                      href="#"
-                      className={`link-body-emphasis d-inline-flex text-decoration-none rounded day-link ${
-                        selectedDay && selectedDay.id === day.id ? "active" : ""
-                      }`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (onDaySelect) {
-                          onDaySelect(day);
-                        }
-                      }}
-                    >
-                      <div className="day-link-content">
-                        <div className="day-header">
-                          <strong>Day {day.dayNumber}</strong>
-                          <small className="text-muted ms-1">
-                            {new Date(day.date).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </small>
+                {hasGeneratedTrip && tripData?.days ? (
+                  tripData.days.map((day) => (
+                    <li key={day.id}>
+                      <a
+                        href="#"
+                        className={`link-body-emphasis d-inline-flex text-decoration-none rounded day-link ${
+                          selectedDay && selectedDay.id === day.id
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (onDaySelect) {
+                            onDaySelect(day);
+                          }
+                        }}
+                      >
+                        <div className="day-link-content">
+                          <div className="day-header">
+                            <strong>Day {day.dayNumber}</strong>
+                            <small className="text-muted ms-1">
+                              {new Date(day.date).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </small>
+                          </div>
+                          <div className="day-route">
+                            <small className="text-muted">
+                              {day.startLocation.name.split(",")[0]} →{" "}
+                              {day.endLocation.name.split(",")[0]}
+                            </small>
+                          </div>
                         </div>
-                        <div className="day-route">
-                          <small className="text-muted">
-                            {day.startLocation.name.split(",")[0]} →{" "}
-                            {day.endLocation.name.split(",")[0]}
-                          </small>
-                        </div>
-                      </div>
-                    </a>
+                      </a>
+                    </li>
+                  ))
+                ) : (
+                  <li>
+                    <div className="px-3 py-2">
+                      <small className="text-muted">
+                        Generate your first trip to see your itinerary here!
+                      </small>
+                    </div>
                   </li>
-                ))}
+                )}
               </ul>
             </div>
           </li>
-          <li className="mb-1">
-            <button
-              className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-              onClick={() => setDashboardCollapsed(!dashboardCollapsed)}
-              aria-expanded={!dashboardCollapsed}
-            >
-              Explore
-            </button>
-            <div className={`collapse ${!dashboardCollapsed ? "show" : ""}`}>
-              <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li>
-                  <a
-                    href="#"
-                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
-                      selectedSection === "explore-news" ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSectionClick("explore-news");
-                    }}
-                  >
-                    News
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
-                      selectedSection === "explore-recommendations"
-                        ? "active"
-                        : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSectionClick("explore-recommendations");
-                    }}
-                  >
-                    Recommendations
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
-                      selectedSection === "explore-tips" ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSectionClick("explore-tips");
-                    }}
-                  >
-                    Tips
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li className="mb-1">
-            <button
-              className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-              onClick={() => setOrdersCollapsed(!ordersCollapsed)}
-              aria-expanded={!ordersCollapsed}
-            >
-              Overview
-            </button>
-            <div className={`collapse ${!ordersCollapsed ? "show" : ""}`}>
-              <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li>
-                  <a
-                    href="#"
-                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
-                      selectedSection === "overview-budget" ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSectionClick("overview-budget");
-                    }}
-                  >
-                    Budget
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
-                      selectedSection === "overview-flights" ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSectionClick("overview-flights");
-                    }}
-                  >
-                    Flight Status
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
-                      selectedSection === "overview-checklist" ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSectionClick("overview-checklist");
-                    }}
-                  >
-                    Checklist
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
-                      selectedSection === "overview-additional" ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSectionClick("overview-additional");
-                    }}
-                  >
-                    More Information
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>
+          {hasGeneratedTrip && (
+            <>
+              <li className="mb-1">
+                <button
+                  className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                  onClick={() => setDashboardCollapsed(!dashboardCollapsed)}
+                  aria-expanded={!dashboardCollapsed}
+                >
+                  Explore
+                </button>
+                <div
+                  className={`collapse ${!dashboardCollapsed ? "show" : ""}`}
+                >
+                  <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li>
+                      <a
+                        href="#"
+                        className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                          selectedSection === "explore-news" ? "active" : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSectionClick("explore-news");
+                        }}
+                      >
+                        News
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                          selectedSection === "explore-recommendations"
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSectionClick("explore-recommendations");
+                        }}
+                      >
+                        Recommendations
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                          selectedSection === "explore-tips" ? "active" : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSectionClick("explore-tips");
+                        }}
+                      >
+                        Tips
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li className="mb-1">
+                <button
+                  className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                  onClick={() => setOrdersCollapsed(!ordersCollapsed)}
+                  aria-expanded={!ordersCollapsed}
+                >
+                  Overview
+                </button>
+                <div className={`collapse ${!ordersCollapsed ? "show" : ""}`}>
+                  <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li>
+                      <a
+                        href="#"
+                        className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                          selectedSection === "overview-budget" ? "active" : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSectionClick("overview-budget");
+                        }}
+                      >
+                        Budget
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                          selectedSection === "overview-flights" ? "active" : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSectionClick("overview-flights");
+                        }}
+                      >
+                        Flight Status
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                          selectedSection === "overview-checklist"
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSectionClick("overview-checklist");
+                        }}
+                      >
+                        Checklist
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className={`link-body-emphasis d-inline-flex text-decoration-none rounded ${
+                          selectedSection === "overview-additional"
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSectionClick("overview-additional");
+                        }}
+                      >
+                        More Information
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </>
+          )}
           <li className="border-top my-3"></li>
           <li className="mb-1">
             <button

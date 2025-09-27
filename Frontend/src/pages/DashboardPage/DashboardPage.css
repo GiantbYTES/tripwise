@@ -17,6 +17,11 @@
   flex-shrink: 0;
 }
 
+/* When no trip data is available, expand the map to fill the remaining space */
+.dashboard-container.no-trip-data .map-container {
+  flex: 1;
+}
+
 /* Ensure modals appear above dashboard content */
 .modal {
   z-index: 1050;
