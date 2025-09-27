@@ -2,10 +2,6 @@
   padding: 0;
 }
 
-.recommendations-container h4 {
-  color: white !important;
-}
-
 .recommendations-header {
   display: flex;
   justify-content: space-between;
