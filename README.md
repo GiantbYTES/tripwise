@@ -1,4 +1,26 @@
-# Tripwise Gemini API Integration
+# TripWise
+
+## New User Experience
+
+For new users with empty localStorage, the dashboard now displays:
+
+- **Sidebar**: Fixed width with "AI TripWising" button and welcome message
+- **Map**: Expanded to fill remaining space, centered on Europe with empty state legend
+- **No Body Component**: Hidden until a trip is generated
+
+### Testing Different States
+
+In the browser console, you can test different dashboard states:
+
+```javascript
+// Test empty state (new user experience)
+clearTripData();
+
+// Test with trip data
+addMockTripData();
+```
+
+## Features Gemini API Integration
 
 This document summarizes the steps taken to integrate the Google Gemini API into the Tripwise backend.
 
@@ -13,11 +35,12 @@ This document summarizes the steps taken to integrate the Google Gemini API into
 4.  **Dependency Installation**: The `@google/generative-ai` npm package was installed to facilitate communication with the Gemini API.
 
 5.  **API Routing and Control**:
-    *   `routes/geminiRouter.js`: This file defines the route for the API.
-    *   `controllers/geminiController.js`: This file contains the core logic for interacting with the Gemini API, including handling requests and responses.
+
+    - `routes/geminiRouter.js`: This file defines the route for the API.
+    - `controllers/geminiController.js`: This file contains the core logic for interacting with the Gemini API, including handling requests and responses.
 
 6.  **Server Integration**: The main server file, `index.js`, was updated to incorporate the `geminiRouter`.
 
 7.  **Debugging and Refinement**: The integration process involved debugging several issues, including:
-    *   Correctly loading the API key from the `.env` file by specifying the correct path.
-    *   Updating the Gemini model name to a valid and available version (`gemini-1.5-flash`).
+    - Correctly loading the API key from the `.env` file by specifying the correct path.
+    - Updating the Gemini model name to a valid and available version (`gemini-1.5-flash`).
